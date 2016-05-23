@@ -1,0 +1,47 @@
+\begin{thebibliography}{}
+
+\bibitem[Breydo and Uversky, 2015]{breydo_structural_2015}
+Breydo, L. and Uversky, V.~N. (2015).
+\newblock Structural, morphological, and functional diversity of amyloid
+  oligomers.
+\newblock {\em FEBS letters}.
+
+\bibitem[Burdukiewicz et~al., 2015]{burdukiewicz}
+Burdukiewicz, M., Sobczyk, P., and Lauber, C. (2015).
+\newblock {\em biogram: analysis of biological sequences using n-grams}.
+\newblock R package version 1.2.
+
+\bibitem[Fändrich, 2012]{fandrich_oligomeric_2012}
+Fändrich, M. (2012).
+\newblock Oligomeric {Intermediates} in {Amyloid} {Formation}: {Structure}
+  {Determination} and {Mechanisms} of {Toxicity}.
+\newblock {\em Journal of Molecular Biology}, 421(4–5):427--440.
+
+\bibitem[Kawashima et~al., 2008]{kawashima_aaindex:_2008}
+Kawashima, S., Pokarowski, P., Pokarowska, M., Kolinski, A., Katayama, T., and
+  Kanehisa, M. (2008).
+\newblock {AAindex}: amino acid index database, progress report 2008.
+\newblock {\em Nucleic Acids Research}, 36(suppl 1):D202--D205.
+
+\bibitem[Liaw and Wiener, 2002]{liaw_classification_2002}
+Liaw, A. and Wiener, M. (2002).
+\newblock Classification and {Regression} by {randomForest}.
+\newblock {\em R News}, 2(3):18--22.
+
+\bibitem[Walsh et~al., 2014]{walsh_pasta_2014}
+Walsh, I., Seno, F., Tosatto, S. C.~E., and Trovato, A. (2014).
+\newblock {PASTA} 2.0: an improved server for protein aggregation prediction.
+\newblock {\em Nucleic Acids Research}, 42(W1):W301--W307.
+
+\bibitem[Wozniak and Kotulska, 2014]{wozniak_characteristics_2014}
+Wozniak, P.~P. and Kotulska, M. (2014).
+\newblock Characteristics of protein residue-residue contacts and their
+  application in contact prediction.
+\newblock {\em Journal of Molecular Modeling}, 20(11).
+
+\bibitem[Wozniak and Kotulska, 2015]{wozniak_amyload:_2015}
+Wozniak, P.~P. and Kotulska, M. (2015).
+\newblock {AmyLoad}: website dedicated to amyloidogenic protein fragments.
+\newblock {\em Bioinformatics (Oxford, England)}.
+
+\end{thebibliography}
