@@ -8,7 +8,6 @@
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage{array,booktabs,tabularx}
-\usepackage{colortbl, xcolor}
 \newcolumntype{Z}{>{\centering\arraybackslash}X}
 
 % rysunki
@@ -32,7 +31,6 @@
 \useinnertheme{rectangles}
 \setbeamercolor{item projected}{bg=darkred}
 % \setbeamertemplate{enumerate items}[default]
-\setbeamertemplate{caption}{\insertcaption} 
 \setbeamertemplate{navigation symbols}{}
 \setbeamercovered{transparent}
 \setbeamercolor{block title}{fg=darkred}
@@ -47,7 +45,7 @@
 \setbeamercolor*{itemize subsubitem}{fg=darkred}
 
 \newlength{\columnheight}
-\setlength{\columnheight}{96cm}
+\setlength{\columnheight}{95cm}
 \renewcommand{\thetable}{}
 \def\andname{,}
 \authornote{}
@@ -63,104 +61,129 @@
 
 
 
-
-<<knitrIntro, echo = FALSE, message=FALSE,warning=FALSE>>=
-library(dplyr)
-library(ggplot2)
-library(gridExtra)
+<<knitrIntro, echo = FALSE, message=FALSE>>=
 library(xtable)
+library(ggplot2)
+library(reshape2)
+library(grid)
 
-size_mod <- 4
-cool_theme <- theme(plot.background=element_rect(fill = "transparent",
-                                                 colour = "transparent"),
-                    panel.grid.major = element_line(colour="lightgrey", linetype = "dashed"),
-                    panel.background = element_rect(fill = "white",colour = "black"),
-                    legend.background = element_rect(fill="NA"),
-                    legend.position = "bottom",
-                    axis.text = element_text(size=12 + size_mod),
-                    axis.title.x = element_text(size=16 + size_mod, vjust = -1), 
-                    axis.title.y = element_text(size=16 + size_mod, vjust = 1),
-                    strip.text = element_text(size=17 + size_mod, face = "bold"),
-                    strip.background = element_rect(fill="lightsteelblue", colour = "black"),
-                    legend.text = element_text(size=13 + size_mod), 
-                    legend.title = element_text(size=17 + size_mod),
-                    plot.title = element_text(size=20 + size_mod))
+poster_theme <- theme(plot.background=element_rect(fill = "transparent",
+                                                   colour = "transparent"),
+                      plot.margin = unit(c(1,1,1,1), "cm"),
+                      axis.text.x = element_text(size=17), 
+                      axis.text.y = element_text(size=17),
+                      axis.title.x = element_text(size=20, vjust = -1), 
+                      axis.title.y = element_text(size=20, vjust = 1),
+                      strip.text = element_text(size=20),
+                      legend.text = element_text(size=17), 
+                      legend.title = element_text(size=20),
+                      plot.title = element_text(size=28),
+                      panel.background = element_rect(fill = "transparent",colour = "black"),
+                      legend.direction="horizontal", legend.position = "bottom",
+                      legend.background = element_rect(fill="NA"))
 @
 
 
 \date{}
-\author{Micha\l{} Burdukiewicz\inst{1}, Piotr Sobczyk\inst{2}, Pawe\l{} Mackiewicz\inst{1} and Ma\l{}gorzata Kotulska\inst{3}
+\author{Micha\l{}  Burdukiewicz\inst{1}*, Piotr Sobczyk\inst{2}, Pawe\l{} Mackiewicz\inst{1}, Stefan R\"odiger\inst{3} \\
+*michalburdukiewicz@gmail.com}
+
+\institute{\small{\textsuperscript{1}University of Wroc\l{}aw, Department of Genomics
+
+\vspace{0.2cm}
+
+\textsuperscript{2}Wroc\l{}aw University of Technology, Faculty of Pure and Applied Mathematics
+
+\vspace{0.2cm}
+
+\textsuperscript{3}Brandenburg University of Technology Cottbus-Senftenberg, Institute of Biotechnology}
+
 }
-
-
-\institute{\small{\textsuperscript{1}University of Wroc\l{}aw, Department of Genomics, Poland 
-
-\vspace{0.3cm}
-
-\textsuperscript{2}Wroc\l{}aw University of Technology, Department of Mathematics, Poland
-
-\vspace{0.3cm}
-
-\textsuperscript{3}Wroc\l{}aw University of Technology, Department of Biomedical Engineering, Poland}
-}
-}
-\title{\huge N-gram analysis of amyloid data}
+\title{\huge dpcR: web server and R package for analysis of digital PCR experiments}
 
 \begin{frame}
-\begin{columns}
-\begin{column}{.485\textwidth}
-\begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
-\begin{minipage}[T]{.95\textwidth}
-\parbox[t][\columnheight]{\textwidth}
-{
-\begin{block}{Aim}
-Investigate features responsible for amyloidogenicity, the cause of various clinical disorders (e.g. Alzheimer's or Creutzfeldt-Jakob's diseases). The features are defines as countinous and discontinous subsequences of amino acids (n-grams).
-\end{block}
-\vfill
+  \begin{columns}
+    \begin{column}{.46\textwidth}
+      \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+        \begin{minipage}[T]{.95\textwidth}
+          \parbox[t][\columnheight]{\textwidth}
+            {
+    
+        
+    \begin{block}{Introduction}
+      Secretory signal peptides:
+        \begin{itemize}
+          \item are short (20-30 residues) N-terminal amino acid sequences,
+            \item direct a protein to the endomembrane system and next to the extracellular localization,
+            \item possess three distinct domains with variable length and characteristic amino acid composition~\citep{hegde_surprising_2006}.
+            \item are universal enough to direct properly proteins in different secretory systems; artifically introduced bacterial signal peptides can guide proteins in mammals~\citep{nagano_2014} and plants~\citep{moeller_2009},
+            \item tag among others hormons, immune system proteins, structural proteins, and metabolic enzymes.
+        \end{itemize}
+    \end{block}
+    
+    \vfill
+    
+    \begin{block}{Organization of signal peptide}
 
-\begin{block}{Introduction}
-All amyloidogenic sequences (amyloids), despite their variability in size and amino acid composition, form mostly cytotoxic aggregates~\citep{breydo_structural_2015}. The hallmark trait of amyloids is the presence of hot-spots, short sequences of amino acids that play key role in the aggregation process~\citep{fandrich_oligomeric_2012}.
-
-\medskip
-
-The n-gram encoding of sequences creates high-dimensional data sets. We filtered significant features using the \textbf{Qui}ck \textbf{P}ermutation \textbf{T}est (\textbf{QuiPT}) and information gain criterion with significance level $0.95$~\citep{burdukiewicz}.
-\end{block}
-\vfill
-
-
-
-
+      \begin{itemize}
+        \item n-region: mostly basic residues~\citep{nielsen_prediction_1998},
+        \item h-region: strongly hydrophobic residues~\citep{nielsen_prediction_1998},
+        \item c-region: a few polar, uncharged residues~\citep{jain_signal_1994}.
+      \end{itemize}
+    \end{block}
+    \vfill
+    
+    
+    \begin{block}{Hidden semi-Markov model (HSMM) of a signal peptide}
+      Assumptions of the model:
+      \begin{itemize}
+        \item the observable distribution of amino acids arises due to being in a certain region (state),
+        \item a duration of the state (the length of given region) is modeled by a probability distribution (other than geometric distribution as in typical hidden Markov models).
+      \end{itemize}
+    \end{block}
+    \vfill
+            }
+        \end{minipage}
+      \end{beamercolorbox}
+    \end{column}
+    
+    
 %new column ------------------------------------------------------    
-
-\begin{column}{.51\textwidth}
-\begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
-\begin{minipage}[T]{.95\textwidth}  
-\parbox[t][\columnheight]{\textwidth}
-{
-
-
-\begin{block}{Summary and availability}
-AmyloGram is a model-independent predictor of amylogenicity. Instead, it provides insight on the structural features present in the hot-spots. Moreover, AmyloGram recognises amylogenic sequences better than existing predictors.
-
-\medskip
-
-AmyloGram web-server: \url{smorfland.uni.wroc.pl/amylogram}.
-\end{block}
-\vfill
-
-
-\begin{block}{Bibliography}
-  \tiny{
-  \bibliographystyle{apalike}
-  \bibliography{amyloids}
-  }
-  \end{block}
-  \vfill
-
-}
-\end{minipage}
-\end{beamercolorbox}
-\end{column}
-\end{columns}  
+    
+    \begin{column}{.54\textwidth}
+      \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+        \begin{minipage}[T]{.95\textwidth}  
+          \parbox[t][\columnheight]{\textwidth}
+            {
+     
+    \begin{block}{Conclusions}
+      Hidden semi-Markov models can be used to accurately predict the presence of secretory signal peptides effectively extracting information from very data sets. Prediction of cleavage site position still requires refinement.
+    \end{block}
+    \vfill 
+    
+        \begin{block}{Availability and funding}
+        \footnotesize{
+      signal.hsmm web server: 
+      
+      \url{www.smorfland.uni.wroc.pl/signalhsmm}
+        }
+        
+        This research was partially funded by KNOW Consortium.
+    \end{block}
+    \vfill 
+     
+     
+    \begin{block}{Bibliography}
+    \tiny{
+      \bibliographystyle{apalike}
+      \bibliography{amyloids}
+    }
+    \end{block}
+    \vfill
+            }
+        \end{minipage}
+      \end{beamercolorbox}
+    \end{column}
+  \end{columns}  
 \end{frame}
 \end{document}
