@@ -1,4 +1,53 @@
-\documentclass[final]{beamer}
+\documentclass[final]{beamer}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 \usepackage{grffile}
 \mode<presentation>{\usetheme{CambridgeUSPOL}}
 
@@ -56,32 +105,12 @@
   {\BBOP}{#1}
   {\BBCP}
 }
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
 
 
-<<knitrIntro, echo = FALSE, message=FALSE>>=
-library(xtable)
-library(ggplot2)
-library(reshape2)
-library(grid)
 
-poster_theme <- theme(plot.background=element_rect(fill = "transparent",
-                                                   colour = "transparent"),
-                      plot.margin = unit(c(1,1,1,1), "cm"),
-                      axis.text.x = element_text(size=17), 
-                      axis.text.y = element_text(size=17),
-                      axis.title.x = element_text(size=20, vjust = -1), 
-                      axis.title.y = element_text(size=20, vjust = 1),
-                      strip.text = element_text(size=20),
-                      legend.text = element_text(size=17), 
-                      legend.title = element_text(size=20),
-                      plot.title = element_text(size=28),
-                      panel.background = element_rect(fill = "transparent",colour = "black"),
-                      legend.direction="horizontal", legend.position = "bottom",
-                      legend.background = element_rect(fill="NA"))
-@
 
 
 \date{}
@@ -127,18 +156,44 @@ poster_theme <- theme(plot.background=element_rect(fill = "transparent",
 \label{workflow}
 \end{figure}
 
-The workflow diagram shows main functions available at each step of a dPCR data analysis.
+The workflow diagram shows main functions available at the each step of a dPCR data analysis.
 
     \end{block}
     \vfill
     
     
-    \begin{block}{Hidden semi-Markov model (HSMM) of a signal peptide}
-      Assumptions of the model:
-      \begin{itemize}
-        \item the observable distribution of amino acids arises due to being in a certain region (state),
-        \item a duration of the state (the length of given region) is modeled by a probability distribution (other than geometric distribution as in typical hidden Markov models).
-      \end{itemize}
+    \begin{block}{Data import}
+
+Import functions limit availability of the package by determining which datasets 
+can be easily processed using the provided framework. Since the RDML format for 
+dPCR is not yet established, we wrote function 
+\textit{read\_dpcr} streamlining data import from several systems produced by Bio-Rad, 
+Fluidigm and Formulatrix. 
+
+\smallskip
+
+To cover experimental or not yet included systems, we 
+created a ''raw data'' format (see Supplementary Files for description). The 
+user can manually arrange his data in this format and import it to the 
+\textit{dpcR} package. Such input files can be created in a spreadsheet program 
+or a text editor.
+
+    \end{block}
+    \vfill
+    
+    \begin{block}{Integration of qPCR data}
+          \begin{figure}
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{figures/qpcr2pp_1.png}
+\end{center}
+\label{workflow}
+\end{figure}
+    
+    The dPCR methodology may be used to analyze qPCR data~\citep{mojtahedi_2014}.
+    Quantification points (Cq) are computed using the real-time measurements of 
+    several amplification curves. Next, the Cq values are binarized and treated as 
+    the status of partitions effectively converting multiple qPCR experiments into a 
+    dPCR. This functionality is supported by the \textit{qpcr2pp} function.
     \end{block}
     \vfill
             }
@@ -155,8 +210,31 @@ The workflow diagram shows main functions available at each step of a dPCR data 
           \parbox[t][\columnheight]{\textwidth}
             {
      
-    \begin{block}{Conclusions}
-      Hidden semi-Markov models can be used to accurately predict the presence of secretory signal peptides effectively extracting information from very data sets. Prediction of cleavage site position still requires refinement.
+    \begin{block}{Calculation of the uncertainty}
+      To determine the uncertainty of the estimated $\lambda$ we employ two previously 
+published peer-reviewed methods The first \cite{dube_mathematical_2008} uses the 
+normal approximation to compute the confidence intervals for binomially 
+distributed $\frac{k}{n}$.
+
+The other method \cite{bhat_single_2009} is based on the uncertainty of the 
+measurement and includes also the uncertainty caused by the variation of volume.
+The exact formula for the uncertainty of the $\lambda$ value, $u_{\lambda}$,  
+is:
+\begin{equation}
+u_{\lambda} = \sqrt{\frac{k}{n^2 (1 - \frac{k}{n})}}
+\end{equation}
+
+and for the uncertainty of the concentration, $u_{c}$, of the template 
+molecules:
+
+\begin{equation}
+u_{c} = C \sqrt{ \left( \frac{1}{\log{1 - \frac{k}{n} }} 
+\sqrt{\frac{k}{n (n - k)}} \right)^2 
++ \left( \frac{u_V}{V} \right)^2}
+\end{equation}
+
+where $u_V$ is uncertainty of the volume. Both methods are implemented in the 
+\textit{summary} function.
     \end{block}
     \vfill 
     
