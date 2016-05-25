@@ -86,7 +86,7 @@ poster_theme <- theme(plot.background=element_rect(fill = "transparent",
 
 \date{}
 \author{Micha\l{}  Burdukiewicz\inst{1}*, Piotr Sobczyk\inst{2}, Pawe\l{} Mackiewicz\inst{1}, Stefan R\"odiger\inst{3} \\
-*michalburdukiewicz@gmail.com}
+\small{*michalburdukiewicz@gmail.com}}
 
 \institute{\small{\textsuperscript{1}University of Wroc\l{}aw, Department of Genomics
 
@@ -111,25 +111,24 @@ poster_theme <- theme(plot.background=element_rect(fill = "transparent",
     
         
     \begin{block}{Introduction}
-      Secretory signal peptides:
-        \begin{itemize}
-          \item are short (20-30 residues) N-terminal amino acid sequences,
-            \item direct a protein to the endomembrane system and next to the extracellular localization,
-            \item possess three distinct domains with variable length and characteristic amino acid composition~\citep{hegde_surprising_2006}.
-            \item are universal enough to direct properly proteins in different secretory systems; artifically introduced bacterial signal peptides can guide proteins in mammals~\citep{nagano_2014} and plants~\citep{moeller_2009},
-            \item tag among others hormons, immune system proteins, structural proteins, and metabolic enzymes.
-        \end{itemize}
+      dPCR reaction consists of multiple amplifications occurring in numerous small partitions. The result of dPCR is a binary vector describing states of partitions (positive in case of detected amplification, negative otherwise). This data is further used to estimate the main parameter, $\lambda$, which may be interpreted as the mean number of template molecules per partition.
+      
+      We created dpcR, an open source tool for reproducible analysis of dPCR data, fully compatible with dMIQE requirements.
     \end{block}
     
     \vfill
     
-    \begin{block}{Organization of signal peptide}
+    \begin{block}{dpcR workflow}
 
-      \begin{itemize}
-        \item n-region: mostly basic residues~\citep{nielsen_prediction_1998},
-        \item h-region: strongly hydrophobic residues~\citep{nielsen_prediction_1998},
-        \item c-region: a few polar, uncharged residues~\citep{jain_signal_1994}.
-      \end{itemize}
+      \begin{figure}
+\begin{center}
+\includegraphics{figures/dpcR_framework.png}
+\end{center}
+\label{workflow}
+\end{figure}
+
+The workflow diagram shows main functions available at each step of a dPCR data analysis.
+
     \end{block}
     \vfill
     
