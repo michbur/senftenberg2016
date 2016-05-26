@@ -57,6 +57,7 @@
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage{array,booktabs,tabularx}
+\usepackage{epstopdf}
 \newcolumntype{Z}{>{\centering\arraybackslash}X}
 
 % rysunki
@@ -151,7 +152,7 @@
 
       \begin{figure}
 \begin{center}
-\includegraphics{figures/dpcR_framework.png}
+\includegraphics{dpcR_figures/dpcR_framework.png}
 \end{center}
 \label{workflow}
 \end{figure}
@@ -184,16 +185,16 @@ or a text editor.
     \begin{block}{Integration of qPCR data}
           \begin{figure}
 \begin{center}
-\includegraphics[width=0.8\columnwidth]{figures/qpcr2pp_1.png}
+\includegraphics{dpcR_figures/qpcr2pp.eps}
 \end{center}
 \label{workflow}
 \end{figure}
     
     The dPCR methodology may be used to analyze qPCR data~\citep{mojtahedi_2014}.
     Quantification points (Cq) are computed using the real-time measurements of 
-    several amplification curves. Next, the Cq values are binarized and treated as 
+    several amplification curves (A). Next, the Cq values are binarized and treated as 
     the status of partitions effectively converting multiple qPCR experiments into a 
-    dPCR. This functionality is supported by the \textit{qpcr2pp} function.
+    dPCR (B). This functionality is supported by the \textit{qpcr2pp} function.
     \end{block}
     \vfill
             }
