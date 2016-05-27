@@ -106,7 +106,7 @@ poster_theme <- theme(plot.background=element_rect(fill = "transparent",
 \textsuperscript{3}Brandenburg University of Technology Cottbus-Senftenberg, Institute of Biotechnology}
 
 }
-\title{\huge dpcR: web server and R package for analysis of digital PCR experiments}
+\title{\huge dpcR: web server and R package for analysis of dPCR experiments}
 
 \begin{frame}
 \begin{columns}
@@ -122,7 +122,7 @@ dPCR reaction consists of multiple amplifications occurring in numerous small pa
 
 \medskip
 
-We created \textit{dpcR}, an open source tool for reproducible analysis of dPCR data, fully compatible with dMIQE requirements.
+We created \textit{dpcR}, an open source \textbf{R} package for reproducible analysis of dPCR data, fully compatible with dMIQE requirements.
 \end{block}
 
 \vfill
@@ -161,7 +161,7 @@ or a text editor.
 \vfill
 
 \begin{block}{Integration of qPCR data}
-<<qpcr2pp, echo = FALSE, message=FALSE,fig.width=13, fig.height=8>>=
+<<qpcr2pp, echo = FALSE, message=FALSE,fig.width=13, fig.height=7.5>>=
 qpcr_dat <- reps2[, c(1L:15)] %>% 
   mutate(Cycles = factor(Cycles)) %>% 
   melt(value.name = "Fluorescence") %>% 
@@ -202,6 +202,31 @@ the status of partitions effectively converting multiple qPCR experiments into a
 dPCR (B). This functionality is supported by the \textit{qpcr2pp} function.
 \end{block}
 \vfill
+
+\begin{block}{Availability}
+\footnotesize{
+dpcReport web server: 
+
+\url{www.smorfland.uni.wroc.pl/dpcReport}
+
+\textit{dpcR} download:
+
+\url{http://cran.r-project.org/package=dpcR}
+
+}
+
+This research was partially funded by KNOW Consortium.
+\end{block}
+\vfill 
+
+\begin{block}{Bibliography}
+\tiny{
+\bibliographystyle{apalike}
+\bibliography{dpcr}
+}
+\end{block}
+\vfill
+
 }
 \end{minipage}
 \end{beamercolorbox}
@@ -253,10 +278,11 @@ plot_data[["exprep"]] <- paste0(plot_data[["experiment"]], plot_data[["replicate
 ggplot(plot_data, aes(y = exprep, x = lambda, colour = experiment, ymin = exprep, ymax = exprep)) + 
   geom_point(size = 4) + 
   ggtitle("Experiment/assay scatter chart") + 
-  scale_y_discrete("Replicate\n", label = plot_data[["assay"]]) + 
+  scale_y_discrete("Replicate\n", label = plot_data[["replicate"]]) + 
   scale_x_continuous(expression(lambda)) + 
   scale_color_discrete("Experiment name:") + 
-  geom_errorbarh(aes(x = lambda, xmin = lambda.low, xmax = lambda.up), size = 1.2, height = nlevels(plot_data[["exprep"]])/160) +
+  geom_errorbarh(aes(x = lambda, xmin = lambda.low, xmax = lambda.up), 
+                 size = 1.2, height = 0.5) +
   facet_wrap(~ method) +
   my_theme
 @
@@ -276,60 +302,54 @@ dPCR experiments. Here, by the comparison we understand a procedure, where all
 data points from all runs are considered and affect the final outcome. 
 
 <<cs2, echo = FALSE, message=FALSE,results='asis',fig.width=15, fig.height=6>>=
-plot_data <- summary(input_data, print = FALSE)[["summary"]]
-#plot_data <- plot_data[plot_data[["method"]] == "dube", ]
-levels(plot_data[["method"]]) <- paste0("Method: ", c("Bhat", "Dube"))
+test_res <- test_counts(input_data, model = "ratio")
+run_coefs <- coef(test_res)
+# Add "run" column to prepare data for plot
+run_coefs[["run"]] <- as.factor(rownames(run_coefs))
+levels(run_coefs[["group"]]) <- LETTERS[1L:3]
 
-plot_data[["exprep"]] <- plot_data[["assay"]]
-
-ggplot(plot_data, aes(y = exprep, x = lambda, colour = experiment, ymin = exprep, ymax = exprep)) + 
+ggplot(run_coefs, aes(y = run, x = lambda, colour = experiment, label = group)) + 
   geom_point(size = 4) + 
-  ggtitle("Experiment/assay scatter chart") + 
-  scale_y_discrete("Assay\n") + 
+  my_theme + 
+  geom_text(aes(x = lambda.up, y = run), show.legend = FALSE, hjust = -0.25, vjust = 0, size = 12) + 
+  scale_y_discrete("Replicate id", labels = run_coefs[["replicate"]] ) +
   scale_x_continuous(expression(lambda)) + 
-  scale_color_discrete("Experiment name:") + 
-  geom_errorbarh(aes(x = lambda, xmin = lambda.low, xmax = lambda.up), size = 1.2, height = nlevels(plot_data[["exprep"]])/160) +
-  facet_wrap(~ method) +
-  my_theme
+  scale_color_discrete("Experiment name") + 
+  geom_errorbarh(aes(x = lambda, xmin = lambda.low, xmax = lambda.up), 
+                 size = 1.2, height = 0.5)
+
 @
 
 Two methods, GLM and MRT, conduct such analysis on the run level by comparing 
 individual runs against each other \citep{Burdukiewicz_tba}. Additionally, we also 
 implemented a method for individual dPCR experiments (not runs) 
-\citep{dorazio_statistical_2015}.
-
+\citep{dorazio_statistical_2015}. All methods automatically assigns experiments to
+groups based on their $\lambda$ values (A, B and C on the figure above).
 
 \end{block}
 \vfill
 
+\begin{block}{\textit{dpcReport}}
 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.76\columnwidth]{dpcR_figures/dpcReport.png}
+\end{center}
+\end{figure}
 
-\begin{block}{Availability and funding}
+The majority of functions described above is also accessible using the web server \textit{dpcReport} and does not require any experience with \textbf{R}. To preserve the reproducible research principle \textit{dpcReport} generates highly customizable reports, which may even include \textbf{R} code required to recreate an analysis.
+
+\end{block}
+\vfill
+
+\begin{block}{Funding}
 \footnotesize{
-dpcReport web server: 
-
-\url{www.smorfland.uni.wroc.pl/dpcReport}
-
-\textit{dpcR} download:
-
-\url{http://cran.r-project.org/package=dpcR}
-
+This research was partially funded by KNOW Consortium, InnoProfile-Transfer 03IPT611X (BMBF) and 
+KMU-innovativ-16 031B0098B (BMBF) projects.
 }
-
-
-
-This research was partially funded by KNOW Consortium.
 \end{block}
 \vfill 
 
-
-\begin{block}{Bibliography}
-\tiny{
-\bibliographystyle{apalike}
-\bibliography{dpcr}
-}
-\end{block}
-\vfill
 }
 \end{minipage}
 \end{beamercolorbox}

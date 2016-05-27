@@ -132,7 +132,7 @@
 \textsuperscript{3}Brandenburg University of Technology Cottbus-Senftenberg, Institute of Biotechnology}
 
 }
-\title{\huge dpcR: web server and R package for analysis of digital PCR experiments}
+\title{\huge dpcR: web server and R package for analysis of dPCR experiments}
 
 \begin{frame}
 \begin{columns}
@@ -148,7 +148,7 @@ dPCR reaction consists of multiple amplifications occurring in numerous small pa
 
 \medskip
 
-We created \textit{dpcR}, an open source tool for reproducible analysis of dPCR data, fully compatible with dMIQE requirements.
+We created \textit{dpcR}, an open source \textbf{R} package for reproducible analysis of dPCR data, fully compatible with dMIQE requirements.
 \end{block}
 
 \vfill
@@ -200,6 +200,31 @@ the status of partitions effectively converting multiple qPCR experiments into a
 dPCR (B). This functionality is supported by the \textit{qpcr2pp} function.
 \end{block}
 \vfill
+
+\begin{block}{Availability}
+\footnotesize{
+dpcReport web server: 
+
+\url{www.smorfland.uni.wroc.pl/dpcReport}
+
+\textit{dpcR} download:
+
+\url{http://cran.r-project.org/package=dpcR}
+
+}
+
+This research was partially funded by KNOW Consortium.
+\end{block}
+\vfill 
+
+\begin{block}{Bibliography}
+\tiny{
+\bibliographystyle{apalike}
+\bibliography{dpcr}
+}
+\end{block}
+\vfill
+
 }
 \end{minipage}
 \end{beamercolorbox}
@@ -218,8 +243,8 @@ dPCR (B). This functionality is supported by the \textit{qpcr2pp} function.
 
 We present the functionalities of \textit{dpcR} using the previously published data set consisting of three experiments repeated twice \citep{dorazio_statistical_2015}.
 
-% latex table generated in R 3.3.0 by xtable 1.8-2 package
-% Fri May 27 18:05:10 2016
+% latex table generated in R 3.2.5 by xtable 1.8-2 package
+% Fri May 27 23:49:52 2016
 \begin{table}[ht]
 \centering
 \begin{tabular}{ccll}
@@ -267,40 +292,33 @@ data points from all runs are considered and affect the final outcome.
 Two methods, GLM and MRT, conduct such analysis on the run level by comparing 
 individual runs against each other \citep{Burdukiewicz_tba}. Additionally, we also 
 implemented a method for individual dPCR experiments (not runs) 
-\citep{dorazio_statistical_2015}.
-
+\citep{dorazio_statistical_2015}. All methods automatically assigns experiments to
+groups based on their $\lambda$ values (A, B and C on the figure above).
 
 \end{block}
 \vfill
 
+\begin{block}{\textit{dpcReport}}
 
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.76\columnwidth]{dpcR_figures/dpcReport.png}
+\end{center}
+\end{figure}
 
-\begin{block}{Availability and funding}
+The majority of functions described above is also accessible using the web server \textit{dpcReport} and does not require any experience with \textbf{R}. To preserve the reproducible research principle \textit{dpcReport} generates highly customizable reports, which may even include \textbf{R} code required to recreate an analysis.
+
+\end{block}
+\vfill
+
+\begin{block}{Funding}
 \footnotesize{
-dpcReport web server: 
-
-\url{www.smorfland.uni.wroc.pl/dpcReport}
-
-\textit{dpcR} download:
-
-\url{http://cran.r-project.org/package=dpcR}
-
+This research was partially funded by KNOW Consortium, InnoProfile-Transfer 03IPT611X (BMBF) and 
+KMU-innovativ-16 031B0098B (BMBF) projects.
 }
-
-
-
-This research was partially funded by KNOW Consortium.
 \end{block}
 \vfill 
 
-
-\begin{block}{Bibliography}
-\tiny{
-\bibliographystyle{apalike}
-\bibliography{dpcr}
-}
-\end{block}
-\vfill
 }
 \end{minipage}
 \end{beamercolorbox}
