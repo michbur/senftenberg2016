@@ -56,6 +56,7 @@
 \usepackage{amsmath}
 \usepackage{natbib}
 \usepackage{graphicx}
+\usepackage{colortbl, xcolor}
 \usepackage{array,booktabs,tabularx}
 \usepackage{epstopdf}
 \newcolumntype{Z}{>{\centering\arraybackslash}X}
@@ -106,6 +107,8 @@
   {\BBOP}{#1}
   {\BBCP}
 }
+
+\definecolor{maroon}{cmyk}{0,0.87,0.68,0.32}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -143,7 +146,9 @@
     \begin{block}{Introduction}
       dPCR reaction consists of multiple amplifications occurring in numerous small partitions. The result of dPCR is a binary vector describing states of partitions (positive in case of detected amplification, negative otherwise). This data is further used to estimate the main parameter, $\lambda$, which may be interpreted as the mean number of template molecules per partition.
       
-      We created dpcR, an open source tool for reproducible analysis of dPCR data, fully compatible with dMIQE requirements.
+      \medskip
+      
+      We created \textit{dpcR}, an open source tool for reproducible analysis of dPCR data, fully compatible with dMIQE requirements.
     \end{block}
     
     \vfill
@@ -210,41 +215,75 @@ or a text editor.
         \begin{minipage}[T]{.95\textwidth}  
           \parbox[t][\columnheight]{\textwidth}
             {
-     
-    \begin{block}{Calculation of the uncertainty}
-      To determine the uncertainty of the estimated $\lambda$ we employ two previously 
-published peer-reviewed methods The first \cite{dube_mathematical_2008} uses the 
-normal approximation to compute the confidence intervals for binomially 
-distributed $\frac{k}{n}$.
+    
+    \begin{block}{Case study: analysis of dPCR data}
 
-The other method \cite{bhat_single_2009} is based on the uncertainty of the 
-measurement and includes also the uncertainty caused by the variation of volume.
-The exact formula for the uncertainty of the $\lambda$ value, $u_{\lambda}$,  
-is:
-\begin{equation}
-u_{\lambda} = \sqrt{\frac{k}{n^2 (1 - \frac{k}{n})}}
-\end{equation}
+We present the functionalities of \textit{dpcR} using the exemplary data set consisting of three experiments.
 
-and for the uncertainty of the concentration, $u_{c}$, of the template 
-molecules:
+% latex table generated in R 3.3.0 by xtable 1.8-2 package
+% Fri May 27 13:01:06 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{ccll}
+  \toprule
+Experiment & Assay & Positive partitions & Total partitions \\ 
+  \midrule
+A & Chr4 & 10 & 765 \\ 
+   \rowcolor{white}A & MYC & 9 & 765 \\ 
+  B & Chr4 & 41 & 765 \\ 
+   \rowcolor{white}B & MYC & 38 & 765 \\ 
+  C & Chr4 & 104 & 765 \\ 
+   \rowcolor{white}C & MYC & 96 & 765 \\ 
+   \bottomrule
+\end{tabular}
+\end{table}
 
-\begin{equation}
-u_{c} = C \sqrt{ \left( \frac{1}{\log{1 - \frac{k}{n} }} 
-\sqrt{\frac{k}{n (n - k)}} \right)^2 
-+ \left( \frac{u_V}{V} \right)^2}
-\end{equation}
 
-where $u_V$ is uncertainty of the volume. Both methods are implemented in the 
-\textit{summary} function.
     \end{block}
-    \vfill 
+    \vfill
+    
+    \begin{block}{Case study 1: calculation of the uncertainty}
+
+To determine the uncertainty of the estimated $\lambda$ \textit{dpcR} employs two previously 
+published peer-reviewed methods \cite{dube_mathematical_2008, bhat_single_2009}.
+
+% latex table generated in R 3.3.0 by xtable 1.8-2 package
+% Fri May 27 13:01:07 2016
+\begin{table}[ht]
+\centering
+\begin{tabular}{ccll}
+  \toprule
+Experiment & Assay & Positive partitions & Total partitions \\ 
+  \midrule
+A & Chr4 & 10 & 765 \\ 
+   \rowcolor{white}A & MYC & 9 & 765 \\ 
+  B & Chr4 & 41 & 765 \\ 
+   \rowcolor{white}B & MYC & 38 & 765 \\ 
+  C & Chr4 & 104 & 765 \\ 
+   \rowcolor{white}C & MYC & 96 & 765 \\ 
+   \bottomrule
+\end{tabular}
+\end{table}
+
+
+    \end{block}
+    \vfill
+    
+
     
         \begin{block}{Availability and funding}
         \footnotesize{
-      signal.hsmm web server: 
+      dpcReport web server: 
       
-      \url{www.smorfland.uni.wroc.pl/signalhsmm}
+      \url{www.smorfland.uni.wroc.pl/dpcReport}
+      
+      \textit{dpcR} download:
+      
+      \url{http://cran.r-project.org/package=dpcR}
+      
         }
+        
+      
         
         This research was partially funded by KNOW Consortium.
     \end{block}
@@ -254,7 +293,7 @@ where $u_V$ is uncertainty of the volume. Both methods are implemented in the
     \begin{block}{Bibliography}
     \tiny{
       \bibliographystyle{apalike}
-      \bibliography{amyloids}
+      \bibliography{dpcr}
     }
     \end{block}
     \vfill
