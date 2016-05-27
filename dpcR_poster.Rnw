@@ -92,7 +92,7 @@ poster_theme <- theme(plot.background=element_rect(fill = "transparent",
 
 
 \date{}
-\author{Micha\l{}  Burdukiewicz\inst{1}*, Piotr Sobczyk\inst{2}, Pawe\l{} Mackiewicz\inst{1}, Stefan R\"odiger\inst{3} \\
+\author{Micha\l{}  Burdukiewicz\inst{1}*, Piotr Sobczyk\inst{2}, Pawe\l{} Mackiewicz\inst{1}, Peter Schierack\inst{3}, Stefan R\"odiger\inst{3} \\
 \small{*michalburdukiewicz@gmail.com}}
 
 \institute{\small{\textsuperscript{1}University of Wroc\l{}aw, Department of Genomics
