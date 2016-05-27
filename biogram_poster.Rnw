@@ -1,0 +1,223 @@
+\documentclass[final]{beamer}
+\usepackage{grffile}
+\mode<presentation>{\usetheme{CambridgeUSPOL}}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{array,booktabs,tabularx}
+\usepackage{colortbl, xcolor}
+\newcolumntype{Z}{>{\centering\arraybackslash}X}
+
+% rysunki
+\usepackage{tikz}
+\usepackage{ifthen}
+\usepackage{xxcolor}
+\usetikzlibrary{arrows}
+\usetikzlibrary[topaths]
+\usetikzlibrary{decorations.pathreplacing}
+%\usepackage{times}\usefonttheme{professionalfonts}  % times is obsolete
+\usefonttheme[onlymath]{serif}
+\boldmath
+\usepackage[orientation=portrait,size=a0,scale=1.4,debug]{beamerposter}                       % e.g. for DIN-A0 poster
+%\usepackage[orientation=portrait,size=a1,scale=1.4,grid,debug]{beamerposter}                  % e.g. for DIN-A1 poster, with optional grid and debug output
+%\usepackage[size=custom,width=200,height=120,scale=2,debug]{beamerposter}                     % e.g. for custom size poster
+%\usepackage[orientation=portrait,size=a0,scale=1.0,printer=rwth-glossy-uv.df]{beamerposter}   % e.g. for DIN-A0 poster with rwth-glossy-uv printer check
+% ...
+%
+
+\usecolortheme{seagull}
+\useinnertheme{rectangles}
+\setbeamercolor{item projected}{bg=darkred}
+% \setbeamertemplate{enumerate items}[default]
+\setbeamertemplate{caption}{\insertcaption} 
+\setbeamertemplate{navigation symbols}{}
+\setbeamercovered{transparent}
+\setbeamercolor{block title}{fg=darkred}
+\setbeamercolor{local structure}{fg=darkred}
+
+\setbeamercolor*{enumerate item}{fg=darkred}
+\setbeamercolor*{enumerate subitem}{fg=darkred}
+\setbeamercolor*{enumerate subsubitem}{fg=darkred}
+
+\setbeamercolor*{itemize item}{fg=darkred}
+\setbeamercolor*{itemize subitem}{fg=darkred}
+\setbeamercolor*{itemize subsubitem}{fg=darkred}
+
+\newlength{\columnheight}
+\setlength{\columnheight}{96cm}
+\renewcommand{\thetable}{}
+\def\andname{,}
+\authornote{}
+
+\renewcommand{\APACrefatitle}[2]{}
+\renewcommand{\bibliographytypesize}{\footnotesize} 
+\renewcommand{\APACrefYearMonthDay}[3]{%
+  {\BBOP}{#1}
+  {\BBCP}
+}
+
+\begin{document}
+
+
+
+
+<<knitrIntro, echo = FALSE, message=FALSE,warning=FALSE>>=
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+library(xtable)
+
+size_mod <- 4
+cool_theme <- theme(plot.background=element_rect(fill = "transparent",
+                                                 colour = "transparent"),
+                    panel.grid.major = element_line(colour="lightgrey", linetype = "dashed"),
+                    panel.background = element_rect(fill = "white",colour = "black"),
+                    legend.background = element_rect(fill="NA"),
+                    legend.position = "bottom",
+                    axis.text = element_text(size=12 + size_mod),
+                    axis.title.x = element_text(size=16 + size_mod, vjust = -1), 
+                    axis.title.y = element_text(size=16 + size_mod, vjust = 1),
+                    strip.text = element_text(size=17 + size_mod, face = "bold"),
+                    strip.background = element_rect(fill="lightsteelblue", colour = "black"),
+                    legend.text = element_text(size=13 + size_mod), 
+                    legend.title = element_text(size=17 + size_mod),
+                    plot.title = element_text(size=20 + size_mod))
+
+@
+
+
+\date{}
+\author{Micha\l{} Burdukiewicz\inst{1}, Piotr Sobczyk\inst{2}, Pawe\l{} Mackiewicz\inst{1} and Ma\l{}gorzata Kotulska\inst{3}\\
+\small{*michalburdukiewicz@gmail.com}}
+
+
+\institute{\small{\textsuperscript{1}University of Wroc\l{}aw, Department of Genomics 
+
+\vspace{0.3cm}
+
+\textsuperscript{2}Wroc\l{}aw University of Technology, Faculty of Pure and Applied Mathematics
+
+\vspace{0.3cm}
+
+\textsuperscript{3}Wroc\l{}aw University of Technology, Department of Biomedical Engineering}
+}
+}
+\title{\huge N-gram analysis of amyloid data}
+
+\begin{frame}
+\begin{columns}
+\begin{column}{.485\textwidth}
+\begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+\begin{minipage}[T]{.95\textwidth}
+\parbox[t][\columnheight]{\textwidth}
+{
+\begin{block}{Aim}
+Investigate features responsible for amyloidogenicity, the cause of various clinical disorders (e.g. Alzheimer's or Creutzfeldt-Jakob's diseases). The features are defines as countinous and discontinous subsequences of amino acids (n-grams).
+\end{block}
+\vfill
+
+
+\begin{block}{Clustering of amino acids}
+
+\begin{enumerate}[1.]
+\item Nine scales representing properties important in the amylogenicity: hydrophobicity, size polarity and solvent accessibility from AAIndex database~\citep{kawashima_aaindex:_2008} were chosen. Additionally, two frequencies of forming contact sites~\citep{wozniak_characteristics_2014} were added. All scales were normalized.
+\item All combinations of characteristics (each time selecting only one scale per the property) were clustered using Euclidean distance and Ward's method.
+\item Each clustering was divided into 3 to 6 groups creating 144 encodings of amino acids. Redundant 51 encodings (identical to other encodings) were removed.
+\end{enumerate}
+
+\end{block}
+\vfill
+
+\begin{block}{Evaluation}
+
+\begin{figure}
+\includegraphics[width=\maxwidth]{ngram_scheme}
+\end{figure}
+
+\begin{enumerate}[1.]
+\item Sequences shorter than 6 amino acids were discarded.
+\item From each sequence overlapping windows of length 6 were extracted. All windows were labelled as their sequence of the origin, e.g. all windows extracted from amyloid sequence were labelled as positive (see Figure A and B).
+\item For each window, 1-, 2- and 3-grams (both discontinous and continous) were extracted (see Figure B). For each encoding, the encoded n-grams were filtered by the QuiPT and used to train the Random Forests~\citep{liaw_classification_2002}. This procedure was performed independently on three training sets: a) 6 amino acids, b) 10 amino acids or shorter, c) 15 amino acids or shorter creating three classifiers.
+\item All classifiers were evaluated in the 5-fold cross-validation eight times. The sequence was labelled as positive (amylogenic), if at least one window was assessed as amylogenic.
+\end{enumerate}
+
+\end{block}
+\vfill
+
+
+
+}
+\end{minipage}
+\end{beamercolorbox}
+\end{column}
+
+
+%new column ------------------------------------------------------    
+
+\begin{column}{.51\textwidth}
+\begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+\begin{minipage}[T]{.95\textwidth}  
+\parbox[t][\columnheight]{\textwidth}
+{
+
+
+
+
+
+
+%' \begin{block}{2-gram frequencies in sequences}
+%' 
+%' <<specSensPlot2, echo = FALSE, message=FALSE, fig.height=8, fig.width=14>>=
+%' #ggplot(seq_inter_ct, aes(x = len, y = prop, fill = tar, label = paste0(round(prop, 4) * 100, "%"))) +
+%' load("specsens.RData")
+%' ggplot(filter(amylo_freq, n == 2), aes(x = variable, y = freq, fill = tar, colour = tar)) +
+%'   geom_bar(stat = "identity", position = "dodge") + 
+%'   scale_y_continuous("Frequency") +
+%'   scale_x_discrete("Group ID\n") + 
+%'   scale_fill_manual("Amyloid", values = c("no" = "skyblue", "yes" = "tan2")) +
+%'   scale_colour_manual("Amyloid", values = c("no" = "skyblue", "yes" = "tan2")) +
+%'   facet_wrap(~ enc, scales = "free_x", ncol = 1) +
+%'   guides(colour = FALSE) +
+%'   cool_theme
+%' @
+%' 
+%' \end{block}
+%' \vfill
+
+\begin{block}{AmyloGram}
+The best specificity encoding (training sequence maximum length 6, 4 groups) and the best sensitivity (training sequence maximum length $<$16, 6 groups) seem to have the different areas of the competence.
+
+AmyloGram, the committee of the best specificity and best sensitivity classifiers, has overall $0.8911$ AUC, $0.7473$ sensitivity and $0.8684$ specificity.
+\end{block}
+\vfill
+
+
+
+\begin{block}{Summary and availability}
+AmyloGram is a model-independent predictor of amylogenicity. Instead, it provides insight on the structural features present in the hot-spots. Moreover, AmyloGram recognises amylogenic sequences better than existing predictors.
+
+\medskip
+
+AmyloGram web-server: \url{smorfland.uni.wroc.pl/amylogram}.
+\end{block}
+\vfill
+
+
+\begin{block}{Bibliography}
+  \tiny{
+  \bibliographystyle{apalike}
+  \bibliography{amyloids}
+  }
+  \end{block}
+  \vfill
+
+}
+\end{minipage}
+\end{beamercolorbox}
+\end{column}
+\end{columns}  
+\end{frame}
+\end{document}
