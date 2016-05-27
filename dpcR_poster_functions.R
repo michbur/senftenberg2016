@@ -1,47 +1,7 @@
-source("my_ggplot_theme.R")
+# case study ----------------------------------------------------
 
-library(dplyr)
-library(reshape2)
-library(qpcR)
-library(dpcR)
+input_data <- six_panels
+levels(slot(input_data, "exper")) <- LETTERS[1L:3]
+input_summary <- dpcr2df(input_data)[, c(1, 3L:5)]
 
-qpcr_dat <- reps2[, c(1L:15)] %>% 
-  mutate(Cycles = factor(Cycles)) %>% 
-  melt(value.name = "Fluorescence") %>% 
-  mutate(Cycles = as.numeric(as.character(Cycles)))
-
-qpcr2pp_res <- qpcr2pp(reps2[, c(1L:15)])
-
-qpcr2pp_dat <- data.frame(slot(qpcr2pp_res, "qpcr"))
-
-p1 <- ggplotGrob(ggplot(qpcr_dat, aes(x = Cycles, y = Fluorescence, color = variable, group = variable)) +
-  geom_line() +
-  scale_color_discrete(guide = FALSE) +
-  scale_x_continuous("Cycle") +
-  my_theme +
-  ggtitle("qPCR data"))
-
-p2 <- ggplotGrob(ggplot(qpcr2pp_dat, aes(x = Cycles, y = lambda)) +
-  geom_step() +
-  geom_rug(sides="b") +
-  scale_y_continuous(expression(lambda)) +
-  scale_x_continuous("Cycle", limits = c(1, 45)) +
-  my_theme+
-  ggtitle("qPCR data in dPCR representation"))
-
-max_width = unit.pmax(p1[["widths"]][2:5], p2[["widths"]][2:5])
-p1[["widths"]][2:5] <- as.list(max_width)
-p2[["widths"]][2:5] <- as.list(max_width)
-
-cairo_ps("./dpcR_figures/qpcr2pp.eps", width = 13, height = 8)
-
-empty_grob <- rectGrob(gp=gpar(fill = "transparent", col = "transparent"))
-
-cairo_ps("./dpcR_figures/qpcr2pp.eps", width = 13, height = 8)                  
-qpcr2pp_plot <- grid.arrange(textGrob("A", x = 0.75, y = 0.9, gp=gpar(fontsize=24)), p1, empty_grob,
-                             textGrob("B", x = 0.75, y = 0.9, gp=gpar(fontsize=24)), p2, empty_grob,
-                             nrow = 2, ncol = 3, widths = c(0.05, 0.9, 0.05))
-grid.newpage()
-grid.draw(qpcr2pp_plot)
-dev.off()
 

@@ -55,8 +55,8 @@
 \renewcommand{\APACrefatitle}[2]{}
 \renewcommand{\bibliographytypesize}{\footnotesize} 
 \renewcommand{\APACrefYearMonthDay}[3]{%
-  {\BBOP}{#1}
-  {\BBCP}
+{\BBOP}{#1}
+{\BBCP}
 }
 
 \definecolor{maroon}{cmyk}{0,0.87,0.68,0.32}
@@ -66,11 +66,13 @@
 
 
 <<knitrIntro, echo = FALSE, message=FALSE>>=
-library(xtable)
-library(ggplot2)
+source("my_ggplot_theme.R")
+
+library(dplyr)
 library(reshape2)
-library(grid)
+library(qpcR)
 library(dpcR)
+library(xtable)
 
 poster_theme <- theme(plot.background=element_rect(fill = "transparent",
                                                    colour = "transparent"),
@@ -107,40 +109,39 @@ poster_theme <- theme(plot.background=element_rect(fill = "transparent",
 \title{\huge dpcR: web server and R package for analysis of digital PCR experiments}
 
 \begin{frame}
-  \begin{columns}
-    \begin{column}{.46\textwidth}
-      \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
-        \begin{minipage}[T]{.95\textwidth}
-          \parbox[t][\columnheight]{\textwidth}
-            {
-    
-        
-    \begin{block}{Introduction}
-      dPCR reaction consists of multiple amplifications occurring in numerous small partitions. The result of dPCR is a binary vector describing states of partitions (positive in case of detected amplification, negative otherwise). This data is further used to estimate the main parameter, $\lambda$, which may be interpreted as the mean number of template molecules per partition.
-      
-      \medskip
-      
-      We created \textit{dpcR}, an open source tool for reproducible analysis of dPCR data, fully compatible with dMIQE requirements.
-    \end{block}
-    
-    \vfill
-    
-    \begin{block}{dpcR workflow}
+\begin{columns}
+\begin{column}{.46\textwidth}
+\begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+\begin{minipage}[T]{.95\textwidth}
+\parbox[t][\columnheight]{\textwidth}
+{
 
-      \begin{figure}
+
+\begin{block}{Introduction}
+dPCR reaction consists of multiple amplifications occurring in numerous small partitions. The result of dPCR is a binary vector describing states of partitions (positive in case of detected amplification, negative otherwise). This data is further used to estimate the main parameter, $\lambda$, which may be interpreted as the mean number of template molecules per partition.
+
+\medskip
+
+We created \textit{dpcR}, an open source tool for reproducible analysis of dPCR data, fully compatible with dMIQE requirements.
+\end{block}
+
+\vfill
+
+\begin{block}{dpcR workflow}
+
+\begin{figure}
 \begin{center}
 \includegraphics{dpcR_figures/dpcR_framework.png}
 \end{center}
-\label{workflow}
 \end{figure}
 
 The workflow diagram shows main functions available at the each step of a dPCR data analysis.
 
-    \end{block}
-    \vfill
-    
-    
-    \begin{block}{Data import}
+\end{block}
+\vfill
+
+
+\begin{block}{Data import}
 
 Import functions limit availability of the package by determining which datasets 
 can be easily processed using the provided framework. Since the RDML format for 
@@ -156,46 +157,78 @@ user can manually arrange his data in this format and import it to the
 \textit{dpcR} package. Such input files can be created in a spreadsheet program 
 or a text editor.
 
-    \end{block}
-    \vfill
-    
-    \begin{block}{Integration of qPCR data}
-          \begin{figure}
-\begin{center}
-\includegraphics{dpcR_figures/qpcr2pp.eps}
-\end{center}
-\label{workflow}
-\end{figure}
-    
-    The dPCR methodology may be used to analyze qPCR data~\citep{mojtahedi_2014}.
-    Quantification points (Cq) are computed using the real-time measurements of 
-    several amplification curves (A). Next, the Cq values are binarized and treated as 
-    the status of partitions effectively converting multiple qPCR experiments into a 
-    dPCR (B). This functionality is supported by the \textit{qpcr2pp} function.
-    \end{block}
-    \vfill
-            }
-        \end{minipage}
-      \end{beamercolorbox}
-    \end{column}
-    
-    
-%new column ------------------------------------------------------    
-    
-    \begin{column}{.54\textwidth}
-      \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
-        \begin{minipage}[T]{.95\textwidth}  
-          \parbox[t][\columnheight]{\textwidth}
-            {
-    
-    \begin{block}{Case study: analysis of dPCR data}
+\end{block}
+\vfill
 
-We present the functionalities of \textit{dpcR} using the exemplary data set consisting of three experiments.
+\begin{block}{Integration of qPCR data}
+<<qpcr2pp, echo = FALSE, message=FALSE,fig.width=13, fig.height=8>>=
+qpcr_dat <- reps2[, c(1L:15)] %>% 
+  mutate(Cycles = factor(Cycles)) %>% 
+  melt(value.name = "Fluorescence") %>% 
+  mutate(Cycles = as.numeric(as.character(Cycles)))
+
+qpcr2pp_res <- qpcr2pp(reps2[, c(1L:15)])
+
+qpcr2pp_dat <- data.frame(slot(qpcr2pp_res, "qpcr"))
+
+p1 <- ggplotGrob(ggplot(qpcr_dat, aes(x = Cycles, y = Fluorescence, color = variable, group = variable)) +
+                   geom_line() +
+                   scale_color_discrete(guide = FALSE) +
+                   scale_x_continuous("Cycle") +
+                   my_theme +
+                   ggtitle("qPCR data"))
+
+p2 <- ggplotGrob(ggplot(qpcr2pp_dat, aes(x = Cycles, y = lambda)) +
+                   geom_step() +
+                   geom_rug(sides="b") +
+                   scale_y_continuous(expression(lambda)) +
+                   scale_x_continuous("Cycle", limits = c(1, 45)) +
+                   my_theme+
+                   ggtitle("qPCR data in dPCR representation"))
+
+max_width = unit.pmax(p1[["widths"]][2:5], p2[["widths"]][2:5])
+p1[["widths"]][2:5] <- as.list(max_width)
+p2[["widths"]][2:5] <- as.list(max_width)
+
+grid.arrange(textGrob("A", x = 0.75, y = 0.9, gp=gpar(fontsize=24)), p1,
+             textGrob("B", x = 0.75, y = 0.9, gp=gpar(fontsize=24)), p2,
+             nrow = 2, ncol = 2, widths = c(0.05, 0.95))
+@
+
+The dPCR methodology may be used to analyze qPCR data~\citep{mojtahedi_2014}.
+Quantification points (Cq) are computed using the real-time measurements of 
+several amplification curves (A). Next, the Cq values are binarized and treated as 
+the status of partitions effectively converting multiple qPCR experiments into a 
+dPCR (B). This functionality is supported by the \textit{qpcr2pp} function.
+\end{block}
+\vfill
+}
+\end{minipage}
+\end{beamercolorbox}
+\end{column}
+
+
+%new column ------------------------------------------------------    
+
+\begin{column}{.54\textwidth}
+\begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+\begin{minipage}[T]{.95\textwidth}  
+\parbox[t][\columnheight]{\textwidth}
+{
+
+\begin{block}{Case study: analysis of dPCR data}
+
+We present the functionalities of \textit{dpcR} using the previously published data set consisting of three experiments repeated twice \citep{dorazio_statistical_2015}.
 
 <<cs0, echo = FALSE, message=FALSE,results='asis'>>=
-input_data <- six_panels
-levels(slot(input_data, "exper")) <- LETTERS[1L:3]
-input_summary <- dpcr2df(input_data)[, c(1, 3L:5)]
+run_id <- c(1L:8, 25L:28)
+input_data <- extract_dpcr(BioradCNV, c(1, 3, 21, 23, 25, 27))
+levels(slot(input_data, "replicate")) <- 1L:2
+
+input_summary <- dpcr2df(input_data)[1L:6, c(1, 3L:5)]
+input_summary[["experiment"]] <- as.character(input_summary[["experiment"]])
+input_summary[["assay"]] <- as.character(input_summary[["assay"]])
+input_summary[6, ] <- rep("...", 4)
 
 colnames(input_summary) <- c("Experiment", "Assay", "Positive partitions", "Total partitions")
 rws <- seq(1, nrow(input_summary) - 1, by = 2)
@@ -205,62 +238,102 @@ print(xtable(input_summary, align = "cccll", digits = 0), include.rownames = FAL
       booktabs = TRUE, add.to.row = list(pos = as.list(rws), command = col))
 @
 
-    \end{block}
-    \vfill
-    
-    \begin{block}{Case study 1: calculation of the uncertainty}
+\end{block}
+\vfill
+
+\begin{block}{Calculation of the uncertainty}
+
+<<cs1, echo = FALSE, message=FALSE,results='asis',fig.width=15, fig.height=6>>=
+plot_data <- summary(input_data, print = FALSE)[["summary"]]
+#plot_data <- plot_data[plot_data[["method"]] == "dube", ]
+levels(plot_data[["method"]]) <- paste0("Method: ", c("Bhat", "Dube"))
+
+plot_data[["exprep"]] <- paste0(plot_data[["experiment"]], plot_data[["replicate"]])
+
+ggplot(plot_data, aes(y = exprep, x = lambda, colour = experiment, ymin = exprep, ymax = exprep)) + 
+  geom_point(size = 4) + 
+  ggtitle("Experiment/assay scatter chart") + 
+  scale_y_discrete("Replicate\n", label = plot_data[["assay"]]) + 
+  scale_x_continuous(expression(lambda)) + 
+  scale_color_discrete("Experiment name:") + 
+  geom_errorbarh(aes(x = lambda, xmin = lambda.low, xmax = lambda.up), size = 1.2, height = nlevels(plot_data[["exprep"]])/160) +
+  facet_wrap(~ method) +
+  my_theme
+@
 
 To determine the uncertainty of the estimated $\lambda$ \textit{dpcR} employs two previously 
 published peer-reviewed methods \cite{dube_mathematical_2008, bhat_single_2009}.
 
-<<cs1, echo = FALSE, message=FALSE,results='asis'>>=
-input_data <- six_panels
-levels(slot(input_data, "exper")) <- LETTERS[1L:3]
-input_summary <- dpcr2df(input_data)[, c(1, 3L:5)]
+\end{block}
+\vfill
 
-colnames(input_summary) <- c("Experiment", "Assay", "Positive partitions", "Total partitions")
-rws <- seq(1, nrow(input_summary) - 1, by = 2)
-col <- rep("\\rowcolor{white}", length(rws))
+\begin{block}{Comparison of individual runs}
 
-print(xtable(input_summary, align = "cccll", digits = 0), include.rownames = FALSE,
-      booktabs = TRUE, add.to.row = list(pos = as.list(rws), command = col))
+
+
+The \textit{dpcR} package covers peer-reviewed methods of comparing results of 
+dPCR experiments. Here, by the comparison we understand a procedure, where all 
+data points from all runs are considered and affect the final outcome. 
+
+<<cs2, echo = FALSE, message=FALSE,results='asis',fig.width=15, fig.height=6>>=
+plot_data <- summary(input_data, print = FALSE)[["summary"]]
+#plot_data <- plot_data[plot_data[["method"]] == "dube", ]
+levels(plot_data[["method"]]) <- paste0("Method: ", c("Bhat", "Dube"))
+
+plot_data[["exprep"]] <- plot_data[["assay"]]
+
+ggplot(plot_data, aes(y = exprep, x = lambda, colour = experiment, ymin = exprep, ymax = exprep)) + 
+  geom_point(size = 4) + 
+  ggtitle("Experiment/assay scatter chart") + 
+  scale_y_discrete("Assay\n") + 
+  scale_x_continuous(expression(lambda)) + 
+  scale_color_discrete("Experiment name:") + 
+  geom_errorbarh(aes(x = lambda, xmin = lambda.low, xmax = lambda.up), size = 1.2, height = nlevels(plot_data[["exprep"]])/160) +
+  facet_wrap(~ method) +
+  my_theme
 @
 
-    \end{block}
-    \vfill
-    
+Two methods, GLM and MRT, conduct such analysis on the run level by comparing 
+individual runs against each other \citep{Burdukiewicz_tba}. Additionally, we also 
+implemented a method for individual dPCR experiments (not runs) 
+\citep{dorazio_statistical_2015}.
 
-    
-        \begin{block}{Availability and funding}
-        \footnotesize{
-      dpcReport web server: 
-      
-      \url{www.smorfland.uni.wroc.pl/dpcReport}
-      
-      \textit{dpcR} download:
-      
-      \url{http://cran.r-project.org/package=dpcR}
-      
-        }
-        
-      
-        
-        This research was partially funded by KNOW Consortium.
-    \end{block}
-    \vfill 
-     
-     
-    \begin{block}{Bibliography}
-    \tiny{
-      \bibliographystyle{apalike}
-      \bibliography{dpcr}
-    }
-    \end{block}
-    \vfill
-            }
-        \end{minipage}
-      \end{beamercolorbox}
-    \end{column}
-  \end{columns}  
+
+\end{block}
+\vfill
+
+
+
+\begin{block}{Availability and funding}
+\footnotesize{
+dpcReport web server: 
+
+\url{www.smorfland.uni.wroc.pl/dpcReport}
+
+\textit{dpcR} download:
+
+\url{http://cran.r-project.org/package=dpcR}
+
+}
+
+
+
+This research was partially funded by KNOW Consortium.
+\end{block}
+\vfill 
+
+
+\begin{block}{Bibliography}
+\tiny{
+\bibliographystyle{apalike}
+\bibliography{dpcr}
+}
+\end{block}
+\vfill
+}
+\end{minipage}
+\end{beamercolorbox}
+\end{column}
+\end{columns}  
 \end{frame}
 \end{document}

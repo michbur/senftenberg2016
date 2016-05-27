@@ -104,8 +104,8 @@
 \renewcommand{\APACrefatitle}[2]{}
 \renewcommand{\bibliographytypesize}{\footnotesize} 
 \renewcommand{\APACrefYearMonthDay}[3]{%
-  {\BBOP}{#1}
-  {\BBCP}
+{\BBOP}{#1}
+{\BBCP}
 }
 
 \definecolor{maroon}{cmyk}{0,0.87,0.68,0.32}
@@ -135,40 +135,39 @@
 \title{\huge dpcR: web server and R package for analysis of digital PCR experiments}
 
 \begin{frame}
-  \begin{columns}
-    \begin{column}{.46\textwidth}
-      \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
-        \begin{minipage}[T]{.95\textwidth}
-          \parbox[t][\columnheight]{\textwidth}
-            {
-    
-        
-    \begin{block}{Introduction}
-      dPCR reaction consists of multiple amplifications occurring in numerous small partitions. The result of dPCR is a binary vector describing states of partitions (positive in case of detected amplification, negative otherwise). This data is further used to estimate the main parameter, $\lambda$, which may be interpreted as the mean number of template molecules per partition.
-      
-      \medskip
-      
-      We created \textit{dpcR}, an open source tool for reproducible analysis of dPCR data, fully compatible with dMIQE requirements.
-    \end{block}
-    
-    \vfill
-    
-    \begin{block}{dpcR workflow}
+\begin{columns}
+\begin{column}{.46\textwidth}
+\begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+\begin{minipage}[T]{.95\textwidth}
+\parbox[t][\columnheight]{\textwidth}
+{
 
-      \begin{figure}
+
+\begin{block}{Introduction}
+dPCR reaction consists of multiple amplifications occurring in numerous small partitions. The result of dPCR is a binary vector describing states of partitions (positive in case of detected amplification, negative otherwise). This data is further used to estimate the main parameter, $\lambda$, which may be interpreted as the mean number of template molecules per partition.
+
+\medskip
+
+We created \textit{dpcR}, an open source tool for reproducible analysis of dPCR data, fully compatible with dMIQE requirements.
+\end{block}
+
+\vfill
+
+\begin{block}{dpcR workflow}
+
+\begin{figure}
 \begin{center}
 \includegraphics{dpcR_figures/dpcR_framework.png}
 \end{center}
-\label{workflow}
 \end{figure}
 
 The workflow diagram shows main functions available at the each step of a dPCR data analysis.
 
-    \end{block}
-    \vfill
-    
-    
-    \begin{block}{Data import}
+\end{block}
+\vfill
+
+
+\begin{block}{Data import}
 
 Import functions limit availability of the package by determining which datasets 
 can be easily processed using the provided framework. Since the RDML format for 
@@ -184,123 +183,128 @@ user can manually arrange his data in this format and import it to the
 \textit{dpcR} package. Such input files can be created in a spreadsheet program 
 or a text editor.
 
-    \end{block}
-    \vfill
-    
-    \begin{block}{Integration of qPCR data}
-          \begin{figure}
-\begin{center}
-\includegraphics{dpcR_figures/qpcr2pp.eps}
-\end{center}
-\label{workflow}
-\end{figure}
-    
-    The dPCR methodology may be used to analyze qPCR data~\citep{mojtahedi_2014}.
-    Quantification points (Cq) are computed using the real-time measurements of 
-    several amplification curves (A). Next, the Cq values are binarized and treated as 
-    the status of partitions effectively converting multiple qPCR experiments into a 
-    dPCR (B). This functionality is supported by the \textit{qpcr2pp} function.
-    \end{block}
-    \vfill
-            }
-        \end{minipage}
-      \end{beamercolorbox}
-    \end{column}
-    
-    
-%new column ------------------------------------------------------    
-    
-    \begin{column}{.54\textwidth}
-      \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
-        \begin{minipage}[T]{.95\textwidth}  
-          \parbox[t][\columnheight]{\textwidth}
-            {
-    
-    \begin{block}{Case study: analysis of dPCR data}
+\end{block}
+\vfill
 
-We present the functionalities of \textit{dpcR} using the exemplary data set consisting of three experiments.
+\begin{block}{Integration of qPCR data}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/qpcr2pp-1} 
+
+\end{knitrout}
+
+The dPCR methodology may be used to analyze qPCR data~\citep{mojtahedi_2014}.
+Quantification points (Cq) are computed using the real-time measurements of 
+several amplification curves (A). Next, the Cq values are binarized and treated as 
+the status of partitions effectively converting multiple qPCR experiments into a 
+dPCR (B). This functionality is supported by the \textit{qpcr2pp} function.
+\end{block}
+\vfill
+}
+\end{minipage}
+\end{beamercolorbox}
+\end{column}
+
+
+%new column ------------------------------------------------------    
+
+\begin{column}{.54\textwidth}
+\begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+\begin{minipage}[T]{.95\textwidth}  
+\parbox[t][\columnheight]{\textwidth}
+{
+
+\begin{block}{Case study: analysis of dPCR data}
+
+We present the functionalities of \textit{dpcR} using the previously published data set consisting of three experiments repeated twice \citep{dorazio_statistical_2015}.
 
 % latex table generated in R 3.3.0 by xtable 1.8-2 package
-% Fri May 27 13:01:06 2016
+% Fri May 27 18:05:10 2016
 \begin{table}[ht]
 \centering
 \begin{tabular}{ccll}
   \toprule
 Experiment & Assay & Positive partitions & Total partitions \\ 
   \midrule
-A & Chr4 & 10 & 765 \\ 
-   \rowcolor{white}A & MYC & 9 & 765 \\ 
-  B & Chr4 & 41 & 765 \\ 
-   \rowcolor{white}B & MYC & 38 & 765 \\ 
-  C & Chr4 & 104 & 765 \\ 
-   \rowcolor{white}C & MYC & 96 & 765 \\ 
+CN1 & MYC & 1687 & 12765 \\ 
+   \rowcolor{white}CN1 & MYC & 1787 & 13681 \\ 
+  CN14 & MYC & 9913 & 13259 \\ 
+   \rowcolor{white}CN14 & MYC & 11117 & 14794 \\ 
+  CN16 & MYC & 13919 & 14747 \\ 
+   \rowcolor{white}... & ... & ... & ... \\ 
    \bottomrule
 \end{tabular}
 \end{table}
 
 
-    \end{block}
-    \vfill
-    
-    \begin{block}{Case study 1: calculation of the uncertainty}
+\end{block}
+\vfill
+
+\begin{block}{Calculation of the uncertainty}
+
+
+\includegraphics[width=\maxwidth]{figure/cs1-1} 
+
 
 To determine the uncertainty of the estimated $\lambda$ \textit{dpcR} employs two previously 
 published peer-reviewed methods \cite{dube_mathematical_2008, bhat_single_2009}.
 
-% latex table generated in R 3.3.0 by xtable 1.8-2 package
-% Fri May 27 13:01:07 2016
-\begin{table}[ht]
-\centering
-\begin{tabular}{ccll}
-  \toprule
-Experiment & Assay & Positive partitions & Total partitions \\ 
-  \midrule
-A & Chr4 & 10 & 765 \\ 
-   \rowcolor{white}A & MYC & 9 & 765 \\ 
-  B & Chr4 & 41 & 765 \\ 
-   \rowcolor{white}B & MYC & 38 & 765 \\ 
-  C & Chr4 & 104 & 765 \\ 
-   \rowcolor{white}C & MYC & 96 & 765 \\ 
-   \bottomrule
-\end{tabular}
-\end{table}
+\end{block}
+\vfill
+
+\begin{block}{Comparison of individual runs}
 
 
-    \end{block}
-    \vfill
-    
 
-    
-        \begin{block}{Availability and funding}
-        \footnotesize{
-      dpcReport web server: 
-      
-      \url{www.smorfland.uni.wroc.pl/dpcReport}
-      
-      \textit{dpcR} download:
-      
-      \url{http://cran.r-project.org/package=dpcR}
-      
-        }
-        
-      
-        
-        This research was partially funded by KNOW Consortium.
-    \end{block}
-    \vfill 
-     
-     
-    \begin{block}{Bibliography}
-    \tiny{
-      \bibliographystyle{apalike}
-      \bibliography{dpcr}
-    }
-    \end{block}
-    \vfill
-            }
-        \end{minipage}
-      \end{beamercolorbox}
-    \end{column}
-  \end{columns}  
+The \textit{dpcR} package covers peer-reviewed methods of comparing results of 
+dPCR experiments. Here, by the comparison we understand a procedure, where all 
+data points from all runs are considered and affect the final outcome. 
+
+
+\includegraphics[width=\maxwidth]{figure/cs2-1} 
+
+
+Two methods, GLM and MRT, conduct such analysis on the run level by comparing 
+individual runs against each other \citep{Burdukiewicz_tba}. Additionally, we also 
+implemented a method for individual dPCR experiments (not runs) 
+\citep{dorazio_statistical_2015}.
+
+
+\end{block}
+\vfill
+
+
+
+\begin{block}{Availability and funding}
+\footnotesize{
+dpcReport web server: 
+
+\url{www.smorfland.uni.wroc.pl/dpcReport}
+
+\textit{dpcR} download:
+
+\url{http://cran.r-project.org/package=dpcR}
+
+}
+
+
+
+This research was partially funded by KNOW Consortium.
+\end{block}
+\vfill 
+
+
+\begin{block}{Bibliography}
+\tiny{
+\bibliographystyle{apalike}
+\bibliography{dpcr}
+}
+\end{block}
+\vfill
+}
+\end{minipage}
+\end{beamercolorbox}
+\end{column}
+\end{columns}  
 \end{frame}
 \end{document}
