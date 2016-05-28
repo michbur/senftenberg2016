@@ -298,7 +298,9 @@ where $N_{T_P > T_R}$ is number of times when $T_P$ (permuted test statistic) wa
 
 Permutation tests are computationally expensive (especially considering precise estimation of small p-values, because the number of permutations is inversely proportional to the interval between p-values).
 
-\textbf{Qui}ck \textbf{P}ermutation \textbf{T}est (QuiPT) thanks to the unique parameterization replaces a permutation test with the exact two-sided Fisher's test speeding it up and reducing the computation cost~\citep{lehmann1986testing}. 
+\medskip
+
+\textbf{Qui}ck \textbf{P}ermutation \textbf{T}est (QuiPT) thanks to the unique parameterization replaces a permutation test with the exact two-sided Fisher's test~\citep{lehmann1986testing} reducing the computation cost. 
       
     \end{block}
     \vfill
@@ -307,7 +309,7 @@ Permutation tests are computationally expensive (especially considering precise 
 
  
 \begin{block}{signalHsmm -  prediction of signal peptides}
-Signal peptides are n-terminal guiding sequences constitution of three specific regions: n-, h- and c-region. Using the n-gram approach we created \textit{signalHsmm}, a software for prediction of signal peptides.
+Signal peptides are n-terminal guiding sequences with three distinguishable regions: n-, h- and c-region. Using the n-gram approach we created \textit{signalHsmm}, a software for prediction of signal peptides.
 
 \medskip
 
@@ -359,7 +361,7 @@ Comparison of performance measures for different classifiers according to singal
 
 \medskip
 
-Thanks to the usage of reduced amino acid alphabet, \textit{signalHsmm} better recognizes signal peptides belonging to \textit{Plasmodiidae} which are characterized by atypical amino acid composition.
+Thanks to the usage of reduced amino acid alphabet, \textit{signalHsmm} better recognizes signal peptides belonging to \textit{Plasmodiidae} which are characterized by an atypical amino acid composition.
 
 
 \end{block}
@@ -384,15 +386,16 @@ AmyloGram & \textbf{0.8972} & \textbf{0.6307} & 0.8658 & 0.7889 \\
    \bottomrule
 \end{tabular}
 \end{table}
-Results of benchmark on \textit{pep424} data set provided by creators of PASTA2. The peptides from this data set were not included in the training data set of \textit{AmyloGram}.
 
 \end{block}
 \vfill
 
 
 
-\begin{block}{Summary and availability}
+\begin{block}{Summary and funding}
 The n-gram analysis creates versatile classifiers able to extract more universal decision rules (e.g. \textit{signalHsmm}, which is able to also predict signal peptides in atypical organisms) or better detect specific proteins. Nonetheless, despite computational quickness provided by the QuiPT method, curse of dimensionality limits n-gram methods to the analysis of shorter sequences.
+
+\bigskip
 
 Our software is avaible as web-servers:
 
@@ -403,6 +406,10 @@ Our software is avaible as web-servers:
 \item \textit{AmyloGram} web-server: \url{smorfland.uni.wroc.pl/amylogram}.
 
 \end{enumerate}
+
+\bigskip
+
+This research was partially funded by the KNOW Consortium and National Science Center (2015/17/N/NZ2/01845).
 
 \end{block}
 \vfill

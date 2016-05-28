@@ -323,7 +323,7 @@ groups based on their $\lambda$ values (A, B and C on the figure above).
 \end{center}
 \end{figure}
 
-The majority of functions described above is also accessible using the web server \textit{dpcReport} and does not require any experience with \textbf{R}. To preserve the reproducible research principle \textit{dpcReport} generates highly customizable reports, which may even include \textbf{R} code required to recreate an analysis.
+The majority of functions described above is also accessible using the web server \textit{dpcReport} and does not require any experience with \textbf{R}. To preserve the reproducible research principle \textit{dpcReport} generates highly customizable reports, which may even include \textbf{R} code necessary to fully recreate the analysis.
 
 \end{block}
 \vfill
