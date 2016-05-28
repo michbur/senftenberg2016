@@ -146,16 +146,16 @@ Originally developed for natural language processing, n-grams are also used in g
        \begin{columns}[c] % the "c" option specifies center vertical alignment
     \column{.5\textwidth} 
 % latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Sat May 28 10:30:53 2016
+% Sat May 28 10:33:15 2016
 \begin{table}[ht]
 \centering
 \begin{tabular}{rllllll}
   \toprule
  & P1 & P2 & P3 & P4 & P5 & P6 \\ 
   \midrule
-S1 & T & A & G & A & C & G \\ 
-   \rowcolor{white}S2 & C & A & T & A & G & G \\ 
-  S3 & A & A & G & T & A & G \\ 
+S1 & G & A & A & T & G & G \\ 
+   \rowcolor{white}S2 & A & T & G & A & C & T \\ 
+  S3 & T & G & T & A & G & A \\ 
    \bottomrule
 \end{tabular}
 \caption{Sample sequences.  S - sequence, P - postion.} 
@@ -168,16 +168,16 @@ S1 & T & A & G & A & C & G \\
     \column{.5\textwidth}
     
 % latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Sat May 28 10:30:53 2016
+% Sat May 28 10:33:15 2016
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrr}
   \toprule
  & A & C & G & T \\ 
   \midrule
-S1 & 2 & 1 & 2 & 1 \\ 
-   \rowcolor{white}S2 & 2 & 1 & 2 & 1 \\ 
-  S3 & 3 & 0 & 2 & 1 \\ 
+S1 & 2 & 0 & 3 & 1 \\ 
+   \rowcolor{white}S2 & 2 & 1 & 1 & 2 \\ 
+  S3 & 2 & 0 & 2 & 2 \\ 
    \bottomrule
 \end{tabular}
 \caption{Unigram counts.} 
@@ -187,16 +187,16 @@ S1 & 2 & 1 & 2 & 1 \\
     \end{columns}
 
 % latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Sat May 28 10:30:53 2016
+% Sat May 28 10:33:15 2016
 \begin{table}[ht]
 \centering
 \begin{tabular}{rrrrrrrrrrrrrr}
   \toprule
  & P1\_A & P2\_A & P3\_A & P4\_A & P5\_A & P6\_A & P1\_C & P2\_C & P3\_C & P4\_C & P5\_C & P6\_C & P1\_G \\ 
   \midrule
-S1 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\ 
-   \rowcolor{white}S2 & 0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\ 
-  S3 & 1 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ 
+S1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\ 
+   \rowcolor{white}S2 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\ 
+  S3 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\ 
    \bottomrule
 \end{tabular}
 \caption{A fraction of possible unigrams with position information.} 

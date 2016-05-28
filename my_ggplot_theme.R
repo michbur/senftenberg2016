@@ -19,10 +19,10 @@ my_theme <- theme(
   legend.text = element_text(size=13 + size_mod), 
   legend.title = element_text(size=14 + size_mod),
   
-  panel.grid.major = element_line(color="white", linetype = "dashed", size = 0.75),
+  panel.grid.major = element_line(color="grey", linetype = "dashed", size = 0.75),
   panel.grid.minor = element_line(color=NA, 
                                   linetype = "dashed", size = 0.5),
-  panel.background = element_rect(fill = "transparent", color = "black"),
+  panel.background = element_rect(fill = "white", color = "black"),
   
   plot.background=element_rect(fill = "transparent",
                                color = "transparent"),
