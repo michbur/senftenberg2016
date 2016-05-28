@@ -61,14 +61,13 @@
 
 \begin{document}
 
-
-
-
 <<knitrIntro, echo = FALSE, message=FALSE,warning=FALSE>>=
+source("my_ggplot_theme.R")
+
 library(dplyr)
-library(ggplot2)
-library(gridExtra)
+library(reshape2)
 library(xtable)
+library(biogram)
 
 size_mod <- 4
 cool_theme <- theme(plot.background=element_rect(fill = "transparent",
@@ -96,16 +95,12 @@ cool_theme <- theme(plot.background=element_rect(fill = "transparent",
 
 \institute{\small{\textsuperscript{1}University of Wroc\l{}aw, Department of Genomics 
 
-\vspace{0.3cm}
-
 \textsuperscript{2}Wroc\l{}aw University of Technology, Faculty of Pure and Applied Mathematics
-
-\vspace{0.3cm}
 
 \textsuperscript{3}Wroc\l{}aw University of Technology, Department of Biomedical Engineering}
 }
 }
-\title{\huge N-gram analysis of amyloid data}
+\title{\huge biogram: a toolkit for biological n-gram analysis}
 
 \begin{frame}
 \begin{columns}
@@ -114,38 +109,179 @@ cool_theme <- theme(plot.background=element_rect(fill = "transparent",
 \begin{minipage}[T]{.95\textwidth}
 \parbox[t][\columnheight]{\textwidth}
 {
-\begin{block}{Aim}
-Investigate features responsible for amyloidogenicity, the cause of various clinical disorders (e.g. Alzheimer's or Creutzfeldt-Jakob's diseases). The features are defines as countinous and discontinous subsequences of amino acids (n-grams).
+\begin{block}{Introduction}
+N-grams (k-tuples) are vectors of n characters derived from input sequence(s). They may form continuous sub-sequences or be discontinuous. 
+Important n-gram parameter is its position. Instead of just counting n-grams, one may want to count how many n-grams occur at a given position in multiple (e.g. related) sequences.
+
+Originally developed for natural language processing, n-grams are also used in genomics~\citep{fang2011}, transcriptomics~\citep{wang2014} and proteomics~\citep{guo2014}.
+
+\small{
+       \begin{columns}[c] % the "c" option specifies center vertical alignment
+    \column{.5\textwidth} 
+<<echo = FALSE,message=FALSE,results='asis'>>=
+tfres <- function(x, cn = c("1-ngram", "2-gram", "3-gram"),
+                  rn = round(seq(from = 0.25, to = 0.91, length.out = 6), 2)) {
+  colnames(x) <- cn
+  rownames(x) <- rn
+  x <- melt(x)
+  #significant proportion, ngram, value
+  colnames(x) <- c("sig", "ngram", "value")
+  x[["sig"]] <- as.factor(x[["sig"]])
+  x
+}
+  
+
+sample_seq <- matrix(sample(c("A", "C", "G", "T"), 18, replace = TRUE), nrow = 3)
+colnames(sample_seq) <- paste0("P", 1L:ncol(sample_seq))
+rownames(sample_seq) <- paste0("S", 1L:nrow(sample_seq))
+print(xtable(data.frame(sample_seq), caption = "Sample sequences.  S - sequence, P - postion.", digits = 0))
+
+# unis <- count_ngrams(sample_seq, 1, 1L:4, pos = TRUE)
+# unis <- data.frame(as.matrix(unis))[, 1L:7]
+# print(xtable(unis, caption = "A fraction of possible unigrams with position information.", digits = 0), include.rownames = FALSE)
+@
+      
+      
+     % column designated by a command
+
+    \column{.5\textwidth}
+    
+<<echo = FALSE,message=FALSE,results='asis'>>=
+    
+     unis <- count_ngrams(sample_seq, 1, c("A", "C", "G", "T"))
+unis <- data.frame(as.matrix(unis))
+colnames(unis) <- c("A", "C", "G", "T")
+rownames(unis) <- paste0("S", 1L:nrow(sample_seq))
+print(xtable(unis, caption = "Unigram counts.", digits = 0), include.rownames = TRUE)
+@
+
+    \end{columns}
+
+<<echo = FALSE,message=FALSE,results='asis'>>=
+    
+unis <- count_ngrams(sample_seq, 1, c("A", "C", "G", "T"), pos = TRUE)
+unis <- data.frame(as.matrix(unis))[, 1L:13]
+colnames(unis) <- substr(sub("X", "P", colnames(unis)), 0, 4)
+rownames(unis) <- paste0("S", 1L:nrow(sample_seq))
+print(xtable(unis, caption = "A fraction of possible unigrams with position information.", digits = 0), include.rownames = TRUE)
+@
+}    
+    \end{block}
+
+
+\begin{block}{Curse of dimensionality}
+    
+Even when we limit ourselves to only continuous positioned n-grams build on $m$ possible
+characters, feature space growths rapidly with the number of elements in n-gram
+($n$) and the length of the sequence ($L$).    
+    
+The number of possible positioned n-grams: 
+
+\begin{center}
+\scalebox{0.85}{
+$
+n_{\text{max}} = L \times m^n
+$
+}
+
+\\
+
+
+\scalebox{0.91}{  
+<<echo = FALSE,message=FALSE,fig.align='center',fig.width=14>>=
+library(reshape2)
+n <- 1:6
+n_max <- 4^n
+
+dat <- melt(sapply(2:5*5, function(i) i * n_max))
+dat[["Var2"]] <- factor(dat[["Var2"]])
+levels(dat[["Var2"]]) <- 2:5*5
+colnames(dat) <- c("n", "L", "n_max")
+ggplot(dat, aes(x = n, y = n_max, fill = L, col = L)) + 
+  geom_line(linetype="dotted", size=1.5) + 
+  geom_point(size=7, shape=21) +
+  scale_x_continuous(breaks = 0L:6) +
+  scale_y_continuous(expression(n["max"])) +
+  my_theme
+
+@
+}
+\end{center}
+    \end{block}
+    \vfill
+    
+    
+    \begin{block}{Feature selecting permutation tests}
+    Model and statistic independent permutation tests can be used to filter features obtained through counting n-grams.
+    
+    During a permutation test class labels are randomly exchanged during computation of a significance statistic. p-values are defined as:
+    
+\begin{center}
+\scalebox{0.85}{
+$      
+\textnormal{p-value} = \frac{N_{T_P > T_R}}{N}
+$
+}
+\end{center}
+
+where $N_{T_P > T_R}$ is number of times when $T_P$ (permuted test statistic) was more extreme than $T_R$ (test statistic for non-permuted data).
+
+Permutation tests are computationally expensive (especially considering precise estimation of small p-values, because the number of permutations is inversely proportional to the interval between p-values).
+      
+    \end{block}
+    \vfill
+    
+    
+\begin{block}{QuiPT concept}
+
+In each permutation, for every observation, there are four possible results:
+
+\begin{center}
+\scalebox{0.85}{
+$P(Target, Feature) = (1,1)) = p \cdot q$
+}
+\end{center}
+
+\\
+
+\begin{center}
+\scalebox{0.85}{
+$P(Target, Feature) = (1,0)) = p \cdot (1-q)$
+}
+\end{center}
+
+\\
+
+\begin{center}
+\scalebox{0.85}{
+$P(Target, Feature) = (0,1)) = (1-p) \cdot q$
+}
+\end{center}
+
+\\
+
+\begin{center}
+\scalebox{0.85}{
+$P(Target, Feature) = (0,0)) = (1-p) \cdot (1-q)$
+}
+\end{center}
+
+\\
+
+Where $p$ and $q$ are fractions of positive observations in target and
+feature respectively. An another view at permutation test is therefore that we 
+get a contingency table, which is to be tested for independence.
+Computing probability of a such table with two constraints, $n_{1,\cdot} = n_{1,1} + n_{1,0}$ and
+$n_{\cdot, 1} = n_{1,1} + n_{0,1}$, and 
+conditioning on $n_{1,1}$, leads to hypergeometric distribution.
+$n_{i,j}$ denotes number of observations for which 
+\scalebox{0.85}{$(Target, Feature) = (i,j)$}
+
+Thanks to this parametrization we replace a permutation test with the exact two-sided Fisher's test~\citep{lehmann1986testing}. 
+%Information Gain is a way of deciding how strong is the evidence against independance.
+
 \end{block}
-\vfill
-
-
-\begin{block}{Clustering of amino acids}
-
-\begin{enumerate}[1.]
-\item Nine scales representing properties important in the amylogenicity: hydrophobicity, size polarity and solvent accessibility from AAIndex database~\citep{kawashima_aaindex:_2008} were chosen. Additionally, two frequencies of forming contact sites~\citep{wozniak_characteristics_2014} were added. All scales were normalized.
-\item All combinations of characteristics (each time selecting only one scale per the property) were clustered using Euclidean distance and Ward's method.
-\item Each clustering was divided into 3 to 6 groups creating 144 encodings of amino acids. Redundant 51 encodings (identical to other encodings) were removed.
-\end{enumerate}
-
-\end{block}
-\vfill
-
-\begin{block}{Evaluation}
-
-\begin{figure}
-\includegraphics[width=\maxwidth]{ngram_scheme}
-\end{figure}
-
-\begin{enumerate}[1.]
-\item Sequences shorter than 6 amino acids were discarded.
-\item From each sequence overlapping windows of length 6 were extracted. All windows were labelled as their sequence of the origin, e.g. all windows extracted from amyloid sequence were labelled as positive (see Figure A and B).
-\item For each window, 1-, 2- and 3-grams (both discontinous and continous) were extracted (see Figure B). For each encoding, the encoded n-grams were filtered by the QuiPT and used to train the Random Forests~\citep{liaw_classification_2002}. This procedure was performed independently on three training sets: a) 6 amino acids, b) 10 amino acids or shorter, c) 15 amino acids or shorter creating three classifiers.
-\item All classifiers were evaluated in the 5-fold cross-validation eight times. The sequence was labelled as positive (amylogenic), if at least one window was assessed as amylogenic.
-\end{enumerate}
-
-\end{block}
-\vfill
+\vfill 
 
 
 
@@ -187,13 +323,46 @@ Investigate features responsible for amyloidogenicity, the cause of various clin
 %' \end{block}
 %' \vfill
 
-\begin{block}{AmyloGram}
-The best specificity encoding (training sequence maximum length 6, 4 groups) and the best sensitivity (training sequence maximum length $<$16, 6 groups) seem to have the different areas of the competence.
-
-AmyloGram, the committee of the best specificity and best sensitivity classifiers, has overall $0.8911$ AUC, $0.7473$ sensitivity and $0.8684$ specificity.
+\begin{block}{Signal peptides}
+Secretory signal peptides:
+        \begin{itemize}
+          \item are short (20-30 residues) N-terminal amino acid sequences,
+            \item direct a protein to the endomembrane system and next to the extracellular localization,
+            \item possess three distinct domains with variable length and characteristic amino acid composition~\citep{hegde_surprising_2006}.
+            \item are universal enough to direct properly proteins in different secretory systems; artifically introduced bacterial signal peptides can guide proteins in mammals~\citep{nagano_2014} and plants~\citep{moeller_2009},
+            \item tag among others hormons, immune system proteins, structural proteins, and metabolic enzymes.
+        \end{itemize}
 \end{block}
 \vfill
 
+\begin{block}{Signal peptide prediction}
+    During the test phase, each protein is fitted to two HSMMs representing respectively proteins with and without signal peptides. The probabilities of both fits and predicted cleavage site constitute the software output.    
+    \begin{figure}
+    \centering
+    \resizebox{32.5cm}{!}{%
+    \begin{tikzpicture}[->,>=stealth',shorten >=2pt,auto,node distance=9.5cm, thick]
+      \tikzstyle{line} = [draw=black, color=blue!30!black!50, line width=4.5mm, -latex']
+      \tikzstyle{main node} = [circle,fill=blue!20,draw, minimum size = 2.2cm, font=\itshape,
+         align=center,  top color=white, bottom color=blue!50!black!70 ] %font=\sffamily\small\bfseries,
+      %nodes
+      \node[main node]          	(start') 	[]						{Start};	     
+      \node[main node, bottom color=purple!70!black!70] 	(nregion') 	[right of=start',xshift=-5mm, yshift=15mm] 	{n-region};
+      \node[main node, bottom color=pink!70!black!70] 	(hregion') 	[right of=nregion',xshift=-5mm,yshift=15mm] 	{h-region};
+      \node[main node, bottom color=gray!70!black!70] 	(cregion') 	[right of=hregion',xshift=-5mm,yshift=-15mm] 	{c-region};
+      \node[main node, bottom color=green!70!black!70] 	(mature') 	[right of=cregion',xshift=-5mm, yshift=-15mm] 	{Mature protein};
+      
+      %lines
+      \path [line] (start')   edge node [left, color=black] {} (nregion');
+      \path [line] (nregion') edge node [below, color=black] { } (hregion');
+      \path [line] (hregion') edge node [below, color=black] { } (cregion');
+      \path [line] (cregion') edge node [left, color=black] { } (mature');
+      \draw [line] (start') to[out=340,in=200] (mature');
+    \end{tikzpicture} }
+    \end{figure}
+
+
+    \end{block}
+    \vfill   
 
 
 \begin{block}{Summary and availability}

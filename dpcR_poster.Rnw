@@ -74,20 +74,6 @@ library(qpcR)
 library(dpcR)
 library(xtable)
 
-poster_theme <- theme(plot.background=element_rect(fill = "transparent",
-                                                   colour = "transparent"),
-                      plot.margin = unit(c(1,1,1,1), "cm"),
-                      axis.text.x = element_text(size=17), 
-                      axis.text.y = element_text(size=17),
-                      axis.title.x = element_text(size=20, vjust = -1), 
-                      axis.title.y = element_text(size=20, vjust = 1),
-                      strip.text = element_text(size=20),
-                      legend.text = element_text(size=17), 
-                      legend.title = element_text(size=20),
-                      plot.title = element_text(size=28),
-                      panel.background = element_rect(fill = "transparent",colour = "black"),
-                      legend.direction="horizontal", legend.position = "bottom",
-                      legend.background = element_rect(fill="NA"))
 @
 
 
