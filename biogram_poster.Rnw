@@ -8,6 +8,7 @@
 \usepackage{natbib}
 \usepackage{graphicx}
 \usepackage{array,booktabs,tabularx}
+\usepackage{epstopdf}
 \usepackage{colortbl, xcolor}
 \newcolumntype{Z}{>{\centering\arraybackslash}X}
 
@@ -115,6 +116,7 @@ Important n-gram parameter is its position. Instead of just counting n-grams, on
 
 Originally developed for natural language processing, n-grams are also used in genomics~\citep{fang2011}, transcriptomics~\citep{wang2014} and proteomics~\citep{guo2014}.
 
+
 \small{
        \begin{columns}[c] % the "c" option specifies center vertical alignment
     \column{.5\textwidth} 
@@ -134,7 +136,11 @@ tfres <- function(x, cn = c("1-ngram", "2-gram", "3-gram"),
 sample_seq <- matrix(sample(c("A", "C", "G", "T"), 18, replace = TRUE), nrow = 3)
 colnames(sample_seq) <- paste0("P", 1L:ncol(sample_seq))
 rownames(sample_seq) <- paste0("S", 1L:nrow(sample_seq))
-print(xtable(data.frame(sample_seq), caption = "Sample sequences.  S - sequence, P - postion.", digits = 0))
+rws <- seq(1, nrow(sample_seq) - 1, by = 2)
+col <- rep("\\rowcolor{white}", length(rws))
+
+print(xtable(data.frame(sample_seq), caption = "Sample sequences.  S - sequence, P - postion.", digits = 0),
+      booktabs = TRUE, add.to.row = list(pos = as.list(rws), command = col))
 
 # unis <- count_ngrams(sample_seq, 1, 1L:4, pos = TRUE)
 # unis <- data.frame(as.matrix(unis))[, 1L:7]
@@ -152,7 +158,8 @@ print(xtable(data.frame(sample_seq), caption = "Sample sequences.  S - sequence,
 unis <- data.frame(as.matrix(unis))
 colnames(unis) <- c("A", "C", "G", "T")
 rownames(unis) <- paste0("S", 1L:nrow(sample_seq))
-print(xtable(unis, caption = "Unigram counts.", digits = 0), include.rownames = TRUE)
+print(xtable(unis, caption = "Unigram counts.", digits = 0), include.rownames = TRUE,
+      booktabs = TRUE, add.to.row = list(pos = as.list(rws), command = col))
 @
 
     \end{columns}
@@ -163,7 +170,9 @@ unis <- count_ngrams(sample_seq, 1, c("A", "C", "G", "T"), pos = TRUE)
 unis <- data.frame(as.matrix(unis))[, 1L:13]
 colnames(unis) <- substr(sub("X", "P", colnames(unis)), 0, 4)
 rownames(unis) <- paste0("S", 1L:nrow(sample_seq))
-print(xtable(unis, caption = "A fraction of possible unigrams with position information.", digits = 0), include.rownames = TRUE)
+print(xtable(unis, caption = "A fraction of possible unigrams with position information.", digits = 0), 
+      include.rownames = TRUE,
+      booktabs = TRUE, add.to.row = list(pos = as.list(rws), command = col))
 @
 }    
     \end{block}
@@ -187,8 +196,8 @@ $
 \\
 
 
-\scalebox{0.91}{  
-<<echo = FALSE,message=FALSE,fig.align='center',fig.width=14>>=
+
+<<echo = FALSE,message=FALSE,fig.align='center',fig.width=14,fig.height=6>>=
 library(reshape2)
 n <- 1:6
 n_max <- 4^n
@@ -205,85 +214,33 @@ ggplot(dat, aes(x = n, y = n_max, fill = L, col = L)) +
   my_theme
 
 @
-}
+
 \end{center}
     \end{block}
     \vfill
     
-    
-    \begin{block}{Feature selecting permutation tests}
-    Model and statistic independent permutation tests can be used to filter features obtained through counting n-grams.
-    
-    During a permutation test class labels are randomly exchanged during computation of a significance statistic. p-values are defined as:
-    
-\begin{center}
-\scalebox{0.85}{
-$      
-\textnormal{p-value} = \frac{N_{T_P > T_R}}{N}
-$
-}
-\end{center}
+    \begin{block}{Reducing number of n-grams}
+    \begin{figure}
+    \centering
+    \includegraphics[width=0.5\columnwidth]{biogram_figures/biogram_scheme.eps} 
+    \end{figure}
 
-where $N_{T_P > T_R}$ is number of times when $T_P$ (permuted test statistic) was more extreme than $T_R$ (test statistic for non-permuted data).
+A) Input data: peptides with a known status (e.g. amyloid/nonamyloid). 
 
-Permutation tests are computationally expensive (especially considering precise estimation of small p-values, because the number of permutations is inversely proportional to the interval between p-values).
+B) Creation of an encoding using a combination of physicochemical properties (PP). 
+
+C) Reduction of the amino acid alphabet according to an encoding. The number of possible n-grams is reduced, because $m$ is smaller (e.g. in this case $m$ is reduced from 20 to 6).
       
     \end{block}
     \vfill
-    
-    
-\begin{block}{QuiPT concept}
-
-In each permutation, for every observation, there are four possible results:
-
-\begin{center}
-\scalebox{0.85}{
-$P(Target, Feature) = (1,1)) = p \cdot q$
-}
-\end{center}
-
-\\
-
-\begin{center}
-\scalebox{0.85}{
-$P(Target, Feature) = (1,0)) = p \cdot (1-q)$
-}
-\end{center}
-
-\\
-
-\begin{center}
-\scalebox{0.85}{
-$P(Target, Feature) = (0,1)) = (1-p) \cdot q$
-}
-\end{center}
-
-\\
-
-\begin{center}
-\scalebox{0.85}{
-$P(Target, Feature) = (0,0)) = (1-p) \cdot (1-q)$
-}
-\end{center}
-
-\\
-
-Where $p$ and $q$ are fractions of positive observations in target and
-feature respectively. An another view at permutation test is therefore that we 
-get a contingency table, which is to be tested for independence.
-Computing probability of a such table with two constraints, $n_{1,\cdot} = n_{1,1} + n_{1,0}$ and
-$n_{\cdot, 1} = n_{1,1} + n_{0,1}$, and 
-conditioning on $n_{1,1}$, leads to hypergeometric distribution.
-$n_{i,j}$ denotes number of observations for which 
-\scalebox{0.85}{$(Target, Feature) = (i,j)$}
-
-Thanks to this parametrization we replace a permutation test with the exact two-sided Fisher's test~\citep{lehmann1986testing}. 
-%Information Gain is a way of deciding how strong is the evidence against independance.
-
-\end{block}
-\vfill 
-
-
+ 
+ \begin{block}{Bibliography}
+  \tiny{
+  \bibliographystyle{apalike}
+  \bibliography{amyloids}
+  }
+  \end{block}
+  \vfill   
 
 }
 \end{minipage}
@@ -323,20 +280,38 @@ Thanks to this parametrization we replace a permutation test with the exact two-
 %' \end{block}
 %' \vfill
 
-\begin{block}{Signal peptides}
-Secretory signal peptides:
-        \begin{itemize}
-          \item are short (20-30 residues) N-terminal amino acid sequences,
-            \item direct a protein to the endomembrane system and next to the extracellular localization,
-            \item possess three distinct domains with variable length and characteristic amino acid composition~\citep{hegde_surprising_2006}.
-            \item are universal enough to direct properly proteins in different secretory systems; artifically introduced bacterial signal peptides can guide proteins in mammals~\citep{nagano_2014} and plants~\citep{moeller_2009},
-            \item tag among others hormons, immune system proteins, structural proteins, and metabolic enzymes.
-        \end{itemize}
-\end{block}
-\vfill
 
-\begin{block}{Signal peptide prediction}
-    During the test phase, each protein is fitted to two HSMMs representing respectively proteins with and without signal peptides. The probabilities of both fits and predicted cleavage site constitute the software output.    
+    \begin{block}{Selection of important n-grams}
+    Model and statistic independent permutation tests can be used to filter features obtained through counting n-grams.
+    
+    During a permutation test class labels are randomly exchanged during computation of a significance statistic. p-values are defined as:
+    
+\begin{center}
+\scalebox{0.85}{
+$      
+\textnormal{p-value} = \frac{N_{T_P > T_R}}{N}
+$
+}
+\end{center}
+
+where $N_{T_P > T_R}$ is number of times when $T_P$ (permuted test statistic) was more extreme than $T_R$ (test statistic for non-permuted data).
+
+Permutation tests are computationally expensive (especially considering precise estimation of small p-values, because the number of permutations is inversely proportional to the interval between p-values).
+
+\textbf{Qui}ck \textbf{P}ermutation \textbf{T}est (QuiPT) thanks to the unique parameterization replaces a permutation test with the exact two-sided Fisher's test speeding it up and reducing the computation cost~\citep{lehmann1986testing}. 
+      
+    \end{block}
+    \vfill
+
+
+
+ 
+\begin{block}{signalHsmm -  prediction of signal peptides}
+Signal peptides are n-terminal guiding sequences constitution of three specific regions: n-, h- and c-region. Using the n-gram approach we created \textit{signalHsmm}, a software for prediction of signal peptides.
+
+\medskip
+
+    \textit{signalHsmm} has two models representing respectively proteins with and without signal peptides. The probabilities of both fits and predicted cleavage site constitute the software output.    
     \begin{figure}
     \centering
     \resizebox{32.5cm}{!}{%
@@ -364,24 +339,76 @@ Secretory signal peptides:
     \end{block}
     \vfill   
 
+\begin{block}{signalHsmm benchmark}
+\begin{table}[ht]
+\centering
 
-\begin{block}{Summary and availability}
-AmyloGram is a model-independent predictor of amylogenicity. Instead, it provides insight on the structural features present in the hot-spots. Moreover, AmyloGram recognises amylogenic sequences better than existing predictors.
+\begin{tabular}{rllll}
+  \toprule
+ & Sensitivity & Specificity & MCC & AUC \\ 
+  \midrule
+signalP 4.1 (no tm) \citep{2011petersensignalp} & 0.8235 & \textbf{0.9100} & 0.6872 & 0.8667 \\ 
+   \rowcolor{white}signalP 4.1 (tm) \citep{2011petersensignalp} & 0.6471 & 0.9431 & 0.6196 & 0.7951 \\
+   signalHsmm & \textbf{0.9804} & 0.8720 & \textbf{0.7409} & \textbf{0.9262} \\ 
+   \rowcolor{white}signalHsmm (raw aa) & 0.8431 & 0.9005 & 0.6853 & 0.8718 \\ 
+   \bottomrule
+\end{tabular}
+\end{table}
+
+Comparison of performance measures for different classifiers according to singal peptide-containing proteins from members of \textit{Plasmodiidae}. 
 
 \medskip
 
-AmyloGram web-server: \url{smorfland.uni.wroc.pl/amylogram}.
+Thanks to the usage of reduced amino acid alphabet, \textit{signalHsmm} better recognizes signal peptides belonging to \textit{Plasmodiidae} which are characterized by atypical amino acid composition.
+
+
+\end{block}
+\vfill
+
+\begin{block}{AmyloGram}
+Amyloids are proteins associated with the number of clinical disorders (e.g., Alzheimer's, Creutzfeldt-Jakob’s and Huntington’s diseases). We created \textit{AmyloGram}, n-based predictor of amyloidogenicity using decision rules extracted by random forests.
+
+\medskip
+
+\begin{table}[ht]
+\centering
+
+\begin{tabular}{ccccc}
+  \toprule
+Classifier & AUC & MCC & Sensitivity & Specificity \\ 
+  \midrule
+AmyloGram & \textbf{0.8972} & \textbf{0.6307} & 0.8658 & 0.7889 \\ 
+  \rowcolor{white}PASTA \citep{walsh_pasta_2014} & 0.8550 & 0.4291 & 0.3826 & 0.9519 \\ 
+   FoldAmyloid \citep{garbuzynskiy_foldamyloid:_2010} & 0.7351 & 0.4526 & 0.7517 & 0.7185 \\ 
+  \rowcolor{white}APPNN \citep{familia_prediction_2015} & 0.8343 & 0.5823 & \textbf{0.8859} & 0.7222 \\ 
+   \bottomrule
+\end{tabular}
+\end{table}
+Results of benchmark on \textit{pep424} data set provided by creators of PASTA2. The peptides from this data set were not included in the training data set of \textit{AmyloGram}.
+
 \end{block}
 \vfill
 
 
-\begin{block}{Bibliography}
-  \tiny{
-  \bibliographystyle{apalike}
-  \bibliography{amyloids}
-  }
-  \end{block}
-  \vfill
+
+\begin{block}{Summary and availability}
+The n-gram analysis creates versatile classifiers able to extract more universal decision rules (e.g. \textit{signalHsmm}, which is able to also predict signal peptides in atypical organisms) or better detect specific proteins. Nonetheless, despite computational quickness provided by the QuiPT method, curse of dimensionality limits n-gram methods to the analysis of shorter sequences.
+
+Our software is avaible as web-servers:
+
+\begin{enumerate}
+
+\item \textit{signalHsmm} web-server: \url{smorfland.uni.wroc.pl/signalHsmm}.
+
+\item \textit{AmyloGram} web-server: \url{smorfland.uni.wroc.pl/amylogram}.
+
+\end{enumerate}
+
+\end{block}
+\vfill
+
+
+
 
 }
 \end{minipage}
