@@ -1,0 +1,163 @@
+---
+title: 'Biogram: a toolkit for n-gram analysis'
+author: "Michał Burdukiewicz, Piotr Sobczyk, Małgorzata Kotulska, Paweł Mackiewicz"
+date: "02-06-2016"
+output:
+  ioslides_presentation: null
+  fig_height: 5.5
+  beamer_presentation: default
+  slidy_presentation: default
+fig_width: 9.5
+widescreen: yes
+---
+  
+```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
+library(DT)
+library(knitr)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+library(dplyr)
+library(biogram)
+library(reshape2)
+library(plotly)
+
+options(DT.options = list(iDisplayLength = 6, searching = TRUE))
+
+size_mod <- -4
+
+enc2df <- function(x)
+  data.frame(Names = names(x), Elements = toupper(sapply(x, paste0, collapse = ", ")))
+
+my_theme <- theme(
+  axis.text = element_text(size=13 + size_mod),
+  axis.title.x = element_text(size=14 + size_mod, vjust = -1),
+  axis.title.y = element_text(size=14 + size_mod, vjust = 1),
+  
+  legend.background = element_rect(fill = "NA"),
+  legend.key = element_rect(fill = "NA", color = "NA", size = 0.5),
+  legend.position = "bottom",
+  #uncomment for publications
+  legend.key.size = unit(0.1, "inches"),
+  legend.margin = unit(-0.25, "lines"),
+  legend.text = element_text(size=13 + size_mod), 
+  legend.title = element_text(size=15 + size_mod),
+  
+  panel.grid.major = element_line(color="grey", linetype = "dashed", size = 0.5),
+  panel.grid.major = element_line(color="lightgrey", 
+                                  linetype = "dashed", size = 0.5),
+  panel.background = element_rect(fill = "transparent", color = "black"),
+  
+  plot.background=element_rect(fill = "transparent",
+                               color = "transparent"),
+  #uncomment for publications
+  plot.margin = unit(rep(0.02, 4), "inches"),
+  plot.title = element_text(size=20 + size_mod),
+  
+  strip.background = element_rect(fill = "NA", color = "NA"),
+  strip.text = element_text(size=13 + size_mod, face = "bold")
+)
+```
+
+## Scientific problem
+
+- How to predict properties of proteins using only amino acid sequences?  
+
+## Amyloids
+
+Amyloids are proteins associated with the number of clinical disorders (e.g. Alzheimer's or Creutzfeldt-Jakob's diseases) characterized by the occurence of hot-spots, short (6-15 amino acid) subsequences.  
+
+Through hot-spots amyloids can create harmful zipper-like $\beta$-structures.
+
+## n-grams
+
+```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
+sample_seq <- matrix(sample(c("A", "C", "G", "T"), 18, replace = TRUE), nrow = 3)
+colnames(sample_seq) <- paste0("P", 1L:ncol(sample_seq))
+rownames(sample_seq) <- paste0("S", 1L:nrow(sample_seq))
+
+kable(data.frame(sample_seq), caption = "Sample sequences.  S - sequence, P - position.", digits = 0)
+```
+
+## n-grams
+
+```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
+unis <- count_ngrams(sample_seq, 1, c("A", "C", "G", "T"))
+unis <- data.frame(as.matrix(unis))
+colnames(unis) <- decode_ngrams(colnames(unis))
+rownames(unis) <- paste0("S", 1L:nrow(sample_seq))
+kable(unis, caption = "Counts of 1-grams.", digits = 0)
+```
+
+## n-grams
+
+```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
+unis <- count_ngrams(sample_seq, 2, c("A", "C", "G", "T"))
+unis <- data.frame(as.matrix(unis))
+colnames(unis) <- decode_ngrams(colnames(unis))
+rownames(unis) <- paste0("S", 1L:nrow(sample_seq))
+kable(unis, caption = "Counts of 2-grams.", digits = 0)
+```
+
+## n-grams
+
+```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
+unis <- count_ngrams(sample_seq, 2, d = 1, c("A", "C", "G", "T"))
+unis <- data.frame(as.matrix(unis))
+colnames(unis) <- sub("_", "|", decode_ngrams(colnames(unis)))
+rownames(unis) <- paste0("S", 1L:nrow(sample_seq))
+kable(unis, caption = "Counts of 2-grams with distance 1.", digits = 0)
+```
+
+
+## Encoding of amino acids
+
+We created 524 284 reduced amino acid alphabets (encodings) with different lengths (from three to six letters) using Ward's clusterization on the selected physicochemical properties from AAIndex database.
+
+
+## Best-performing encoding
+
+```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
+datatable(enc2df(list(`1` = "g", 
+                  `2` = c("k", "p", "r"), 
+                  `3` = c("i", "l", "v"), 
+                  `4` = c("f", "w", "y"), 
+                  `5` = c("a", "c", "h", "m"), 
+                  `6` = c("d", "e", "n", "q", "s", "t"))), 
+          rownames = FALSE, filter = "none", 
+          options = list(dom = 't')) %>% 
+  formatStyle(
+    'Elements',
+    backgroundColor = styleEqual("K, P, R", 'aquamarine')
+  )
+```
+
+## Important n-grams
+
+```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE,fig.width=10}
+ngram_freq <- read.csv("ngram_freq.csv")
+
+ngram_freq_plot <- mutate(ngram_freq, decoded_name = gsub("_", "|", decoded_name)) %>%
+  mutate(decoded_name = factor(decoded_name, levels = as.character(decoded_name)),
+         amyloid = diff_freq > 0) %>%
+  melt() %>%
+  filter(variable %in% c("pos", "neg")) %>%
+  droplevels %>%
+  mutate(variable = factor(variable, labels = c("Amyloid", "Non-amyloid"))) %>% 
+  filter(association != "Not found") %>% 
+  rename(Frequency = value) %>% 
+  droplevels
+
+ngram_plot <- ggplot(ngram_freq_plot, aes(x = decoded_name, y = Frequency)) +
+  geom_bar(aes(fill = variable), position = "dodge", stat = "identity") +
+  geom_point(data = group_by(ngram_freq_plot, decoded_name)  %>% filter(Frequency == max(Frequency)),
+             aes(y = Frequency + 0.002, shape = association)) +
+  scale_fill_manual("", values = c("gold", "darkmagenta")) +
+  scale_shape_manual("Motif:", breaks = c("Amyloidogenic", "Non-amyloidogenic"), values = c(16, 17, NA)) +
+  scale_y_continuous("Frequency") +
+  scale_x_discrete("") +
+  my_theme +
+  theme(panel.grid.major.y = element_line(color = "lightgrey", size = 0.5)) 
+
+ggplotly(ngram_plot, tooltip = "y")
+```

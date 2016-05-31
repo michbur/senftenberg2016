@@ -121,18 +121,6 @@ Originally developed for natural language processing, n-grams are also used in g
        \begin{columns}[c] % the "c" option specifies center vertical alignment
     \column{.5\textwidth} 
 <<echo = FALSE,message=FALSE,results='asis'>>=
-tfres <- function(x, cn = c("1-ngram", "2-gram", "3-gram"),
-                  rn = round(seq(from = 0.25, to = 0.91, length.out = 6), 2)) {
-  colnames(x) <- cn
-  rownames(x) <- rn
-  x <- melt(x)
-  #significant proportion, ngram, value
-  colnames(x) <- c("sig", "ngram", "value")
-  x[["sig"]] <- as.factor(x[["sig"]])
-  x
-}
-  
-
 sample_seq <- matrix(sample(c("A", "C", "G", "T"), 18, replace = TRUE), nrow = 3)
 colnames(sample_seq) <- paste0("P", 1L:ncol(sample_seq))
 rownames(sample_seq) <- paste0("S", 1L:nrow(sample_seq))
@@ -368,7 +356,7 @@ Thanks to the usage of reduced amino acid alphabet, \textit{signalHsmm} better r
 \vfill
 
 \begin{block}{AmyloGram}
-Amyloids are proteins associated with the number of clinical disorders (e.g., Alzheimer's, Creutzfeldt-Jakob’s and Huntington’s diseases). We created \textit{AmyloGram}, n-based predictor of amyloidogenicity using decision rules extracted by random forests.
+Amyloids are proteins associated with the number of clinical disorders (e.g., Alzheimer's, Creutzfeldt-Jakob?s and Huntington?s diseases). We created \textit{AmyloGram}, n-based predictor of amyloidogenicity using decision rules extracted by random forests.
 
 \medskip
 
