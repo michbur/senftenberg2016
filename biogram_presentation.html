@@ -113,245 +113,67 @@
 
 <p>Through hot-spots amyloids can create harmful zipper-like \(\beta\)-structures.</p>
 
-</article></slide><slide class=''><hgroup><h2>n-grams</h2></hgroup><article  id="n-grams">
+<!-- ## n-grams -->
 
-<table class = 'rmdtable'>
-<caption>Sample sequences. S - sequence, P - position.</caption>
-<tr class="header">
-<th align="left"></th>
-<th align="left">P1</th>
-<th align="left">P2</th>
-<th align="left">P3</th>
-<th align="left">P4</th>
-<th align="left">P5</th>
-<th align="left">P6</th>
-</tr>
-<tr class="odd">
-<td align="left">S1</td>
-<td align="left">A</td>
-<td align="left">C</td>
-<td align="left">G</td>
-<td align="left">A</td>
-<td align="left">T</td>
-<td align="left">C</td>
-</tr>
-<tr class="even">
-<td align="left">S2</td>
-<td align="left">A</td>
-<td align="left">G</td>
-<td align="left">A</td>
-<td align="left">C</td>
-<td align="left">T</td>
-<td align="left">G</td>
-</tr>
-<tr class="odd">
-<td align="left">S3</td>
-<td align="left">C</td>
-<td align="left">C</td>
-<td align="left">G</td>
-<td align="left">C</td>
-<td align="left">T</td>
-<td align="left">G</td>
-</tr>
-</table>
+<!-- ```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE} -->
 
-</article></slide><slide class=''><hgroup><h2>n-grams</h2></hgroup><article  id="n-grams-1">
+<!-- sample_seq <- matrix(sample(c("A", "C", "G", "T"), 18, replace = TRUE), nrow = 3) -->
 
-<table class = 'rmdtable'>
-<caption>Counts of 1-grams.</caption>
-<tr class="header">
-<th align="left"></th>
-<th align="right">A</th>
-<th align="right">C</th>
-<th align="right">G</th>
-<th align="right">T</th>
-</tr>
-<tr class="odd">
-<td align="left">S1</td>
-<td align="right">2</td>
-<td align="right">2</td>
-<td align="right">1</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="left">S2</td>
-<td align="right">2</td>
-<td align="right">1</td>
-<td align="right">2</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">S3</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">2</td>
-<td align="right">1</td>
-</tr>
-</table>
+<!-- colnames(sample_seq) <- paste0("P", 1L:ncol(sample_seq)) -->
 
-</article></slide><slide class=''><hgroup><h2>n-grams</h2></hgroup><article  id="n-grams-2">
+<!-- rownames(sample_seq) <- paste0("S", 1L:nrow(sample_seq)) -->
 
-<table class = 'rmdtable'>
-<caption>Counts of 2-grams.</caption>
-<tr class="header">
-<th align="left"></th>
-<th align="right">AA</th>
-<th align="right">CA</th>
-<th align="right">GA</th>
-<th align="right">TA</th>
-<th align="right">AC</th>
-<th align="right">CC</th>
-<th align="right">GC</th>
-<th align="right">TC</th>
-<th align="right">AG</th>
-<th align="right">CG</th>
-<th align="right">GG</th>
-<th align="right">TG</th>
-<th align="right">AT</th>
-<th align="right">CT</th>
-<th align="right">GT</th>
-<th align="right">TT</th>
-</tr>
-<tr class="odd">
-<td align="left">S1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="left">S2</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="left">S3</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-</table>
+<!-- kable(data.frame(sample_seq), caption = "Sample sequences.  S - sequence, P - position.", digits = 0) -->
 
-</article></slide><slide class=''><hgroup><h2>n-grams</h2></hgroup><article  id="n-grams-3">
+<!-- ``` -->
 
-<table class = 'rmdtable'>
-<caption>Counts of 2-grams with distance 1.</caption>
-<tr class="header">
-<th align="left"></th>
-<th align="right">A|A</th>
-<th align="right">C|A</th>
-<th align="right">G|A</th>
-<th align="right">T|A</th>
-<th align="right">A|C</th>
-<th align="right">C|C</th>
-<th align="right">G|C</th>
-<th align="right">T|C</th>
-<th align="right">A|G</th>
-<th align="right">C|G</th>
-<th align="right">G|G</th>
-<th align="right">T|G</th>
-<th align="right">A|T</th>
-<th align="right">C|T</th>
-<th align="right">G|T</th>
-<th align="right">T|T</th>
-</tr>
-<tr class="odd">
-<td align="left">S1</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="left">S2</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="left">S3</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">2</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-</table>
+<!-- ## n-grams -->
+
+<!-- ```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE} -->
+
+<!-- unis <- count_ngrams(sample_seq, 1, c("A", "C", "G", "T")) -->
+
+<!-- unis <- data.frame(as.matrix(unis)) -->
+
+<!-- colnames(unis) <- decode_ngrams(colnames(unis)) -->
+
+<!-- rownames(unis) <- paste0("S", 1L:nrow(sample_seq)) -->
+
+<!-- kable(unis, caption = "Counts of 1-grams.", digits = 0) -->
+
+<!-- ``` -->
+
+<!-- ## n-grams -->
+
+<!-- ```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE} -->
+
+<!-- unis <- count_ngrams(sample_seq, 2, c("A", "C", "G", "T")) -->
+
+<!-- unis <- data.frame(as.matrix(unis)) -->
+
+<!-- colnames(unis) <- decode_ngrams(colnames(unis)) -->
+
+<!-- rownames(unis) <- paste0("S", 1L:nrow(sample_seq)) -->
+
+<!-- kable(unis, caption = "Counts of 2-grams.", digits = 0) -->
+
+<!-- ``` -->
+
+<!-- ## n-grams -->
+
+<!-- ```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE} -->
+
+<!-- unis <- count_ngrams(sample_seq, 2, d = 1, c("A", "C", "G", "T")) -->
+
+<!-- unis <- data.frame(as.matrix(unis)) -->
+
+<!-- colnames(unis) <- sub("_", "|", decode_ngrams(colnames(unis))) -->
+
+<!-- rownames(unis) <- paste0("S", 1L:nrow(sample_seq)) -->
+
+<!-- kable(unis, caption = "Counts of 2-grams with distance 1.", digits = 0) -->
+
+<!-- ``` -->
 
 </article></slide><slide class=''><hgroup><h2>Encoding of amino acids</h2></hgroup><article  id="encoding-of-amino-acids">
 
@@ -359,13 +181,27 @@
 
 </article></slide><slide class=''><hgroup><h2>Best-performing encoding</h2></hgroup><article  id="best-performing-encoding">
 
-<p><div id="htmlwidget-9001" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-9001">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["G","K, P, R","I, L, V","F, W, Y","A, C, H, M","D, E, N, Q, S, T"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Names\u003c/th>\n      <th>Elements\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"iDisplayLength":6,"searching":true,"dom":"t","order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[1]; if (value!==null) $(this.api().cell(row, 1).node()).css({'background-color':value == 'K, P, R' ? 'aquamarine' : ''});\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script></p>
+<p><div id="htmlwidget-5008" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5008">{"x":{"filter":"none","data":[["1","2","3","4","5","6"],["G","K, P, R","I, L, V","F, W, Y","A, C, H, M","D, E, N, Q, S, T"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Names\u003c/th>\n      <th>Elements\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"iDisplayLength":6,"searching":true,"dom":"t","order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[1]; if (value!==null) $(this.api().cell(row, 1).node()).css({'background-color':value == 'K, P, R' ? 'aquamarine' : ''});\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script></p>
 
 </article></slide><slide class=''><hgroup><h2>Important n-grams</h2></hgroup><article  id="important-n-grams">
 
-<p><div id="htmlwidget-8255" style="width:960px;height:432px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-8255">{"x":{"data":[{"x":[0.775,1.775,2.775,3.775,4.775,5.775,6.775,7.775,8.775,9.775,10.775,11.775,12.775,13.775,14.775],"y":[0.0344629523262493,0.00791974656810982,0.00486223662884927,0.0104166666666667,0.0122767857142857,0.013764880952381,0.0171130952380952,0.0249255952380952,0.0290178571428571,0.0360863095238095,0.0345982142857143,0.0346839546191248,0.0385737439222042,0.040922619047619,0.103101665709362],"text":["Frequency: 0.03","Frequency: 0.01","Frequency: 0","Frequency: 0.01","Frequency: 0.01","Frequency: 0.01","Frequency: 0.02","Frequency: 0.02","Frequency: 0.03","Frequency: 0.04","Frequency: 0.03","Frequency: 0.03","Frequency: 0.04","Frequency: 0.04","Frequency: 0.1"],"key":null,"type":"bar","marker":{"autocolorscale":false,"color":"rgba(255,215,0,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"Amyloid","legendgroup":"Amyloid","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1.225,2.225,3.225,4.225,5.225,6.225,7.225,8.225,9.225,10.225,11.225,12.225,13.225,14.225,15.225],"y":[0.0684801732304777,0.026404666871354,0.0169918187539333,0.0026300958106331,0.00244223182415931,0.00225436783768552,0.00338155175652827,0.00413300770242345,0.00732669547247793,0.0157805748637986,0.0105203832425324,0.0102265575833858,0.0144745122718691,0.0165320308096938,0.0843145215861416],"text":["Frequency: 0.07","Frequency: 0.03","Frequency: 0.02","Frequency: 0","Frequency: 0","Frequency: 0","Frequency: 0","Frequency: 0","Frequency: 0.01","Frequency: 0.02","Frequency: 0.01","Frequency: 0.01","Frequency: 0.01","Frequency: 0.02","Frequency: 0.08"],"key":null,"type":"bar","marker":{"autocolorscale":false,"color":"rgba(139,0,139,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"Non-amyloid","legendgroup":"Non-amyloid","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[4,5,6,7,8,9,10,11,12,13,14,15],"y":[0.0124166666666667,0.0142767857142857,0.015764880952381,0.0191130952380952,0.0269255952380952,0.0310178571428571,0.0380863095238095,0.0365982142857143,0.0366839546191248,0.0405737439222042,0.042922619047619,0.105101665709362],"text":["Frequency: 0.01","Frequency: 0.01","Frequency: 0.02","Frequency: 0.02","Frequency: 0.03","Frequency: 0.03","Frequency: 0.04","Frequency: 0.04","Frequency: 0.04","Frequency: 0.04","Frequency: 0.04","Frequency: 0.11"],"key":null,"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"name":"Amyloidogenic","legendgroup":"Amyloidogenic","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1,2,3],"y":[0.0704801732304777,0.028404666871354,0.0189918187539333],"text":["Frequency: 0.07","Frequency: 0.03","Frequency: 0.02"],"key":null,"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"triangle-up","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"name":"Non-amyloidogenic","legendgroup":"Non-amyloidogenic","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text"}],"layout":{"margin":{"b":17.5281361560814,"l":48.7444084682441,"t":17.92,"r":1.92},"plot_bgcolor":"transparent","paper_bgcolor":"transparent","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"type":"linear","autorange":false,"tickmode":"array","range":[0.4,15.6],"ticktext":["2","2|||2","22","343","533","433","643","334","333","633","4|3","43","34","3|4","3"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.9551681195517},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"domain":[0,1],"gridcolor":"rgba(190,190,190,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":"","titlefont":{"color":"rgba(0,0,0,1)","family":"","size":13.2835201328352},"hoverformat":".2f"},"yaxis":{"type":"linear","autorange":false,"tickmode":"array","range":[-0.0052550832854681,0.11035674899483],"ticktext":["0.000","0.025","0.050","0.075","0.100"],"tickvals":[0,0.025,0.05,0.075,0.1],"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.9551681195517},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"domain":[0,1],"gridcolor":"rgba(211,211,211,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":"Frequency","titlefont":{"color":"rgba(0,0,0,1)","family":"","size":13.2835201328352},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"transparent","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.9551681195517},"y":0.807524059492563},"annotations":[{"text":"Motif:<br>","x":1.02,"y":1,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xref":"paper","yref":"paper","textangle":-0,"xanchor":"left","yanchor":"top"}],"barmode":"stack","bargap":0,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToRemove":["sendDataToCloud"]},"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script></p></article></slide>
+<p><div id="htmlwidget-1653" style="width:960px;height:432px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1653">{"x":{"data":[{"x":[0.775,1.775,2.775,3.775,4.775,5.775,6.775,7.775,8.775,9.775,10.775,11.775,12.775,13.775,14.775],"y":[0.0344629523262493,0.00791974656810982,0.00486223662884927,0.0104166666666667,0.0122767857142857,0.013764880952381,0.0171130952380952,0.0249255952380952,0.0290178571428571,0.0360863095238095,0.0345982142857143,0.0346839546191248,0.0385737439222042,0.040922619047619,0.103101665709362],"text":["Frequency: 0.03","Frequency: 0.01","Frequency: 0","Frequency: 0.01","Frequency: 0.01","Frequency: 0.01","Frequency: 0.02","Frequency: 0.02","Frequency: 0.03","Frequency: 0.04","Frequency: 0.03","Frequency: 0.03","Frequency: 0.04","Frequency: 0.04","Frequency: 0.1"],"key":null,"type":"bar","marker":{"autocolorscale":false,"color":"rgba(255,215,0,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"Amyloid","legendgroup":"Amyloid","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1.225,2.225,3.225,4.225,5.225,6.225,7.225,8.225,9.225,10.225,11.225,12.225,13.225,14.225,15.225],"y":[0.0684801732304777,0.026404666871354,0.0169918187539333,0.0026300958106331,0.00244223182415931,0.00225436783768552,0.00338155175652827,0.00413300770242345,0.00732669547247793,0.0157805748637986,0.0105203832425324,0.0102265575833858,0.0144745122718691,0.0165320308096938,0.0843145215861416],"text":["Frequency: 0.07","Frequency: 0.03","Frequency: 0.02","Frequency: 0","Frequency: 0","Frequency: 0","Frequency: 0","Frequency: 0","Frequency: 0.01","Frequency: 0.02","Frequency: 0.01","Frequency: 0.01","Frequency: 0.01","Frequency: 0.02","Frequency: 0.08"],"key":null,"type":"bar","marker":{"autocolorscale":false,"color":"rgba(139,0,139,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"Non-amyloid","legendgroup":"Non-amyloid","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[4,5,6,7,8,9,10,11,12,13,14,15],"y":[0.0124166666666667,0.0142767857142857,0.015764880952381,0.0191130952380952,0.0269255952380952,0.0310178571428571,0.0380863095238095,0.0365982142857143,0.0366839546191248,0.0405737439222042,0.042922619047619,0.105101665709362],"text":["Frequency: 0.01","Frequency: 0.01","Frequency: 0.02","Frequency: 0.02","Frequency: 0.03","Frequency: 0.03","Frequency: 0.04","Frequency: 0.04","Frequency: 0.04","Frequency: 0.04","Frequency: 0.04","Frequency: 0.11"],"key":null,"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"name":"Amyloidogenic","legendgroup":"Amyloidogenic","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text"},{"x":[1,2,3],"y":[0.0704801732304777,0.028404666871354,0.0189918187539333],"text":["Frequency: 0.07","Frequency: 0.03","Frequency: 0.02"],"key":null,"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"triangle-up","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"name":"Non-amyloidogenic","legendgroup":"Non-amyloidogenic","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text"}],"layout":{"margin":{"b":17.5281361560814,"l":48.7444084682441,"t":17.92,"r":1.92},"plot_bgcolor":"transparent","paper_bgcolor":"transparent","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"type":"linear","autorange":false,"tickmode":"array","range":[0.4,15.6],"ticktext":["2","2|||2","22","343","533","433","643","334","333","633","4|3","43","34","3|4","3"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.9551681195517},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"domain":[0,1],"gridcolor":"rgba(190,190,190,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":"","titlefont":{"color":"rgba(0,0,0,1)","family":"","size":13.2835201328352},"hoverformat":".2f"},"yaxis":{"type":"linear","autorange":false,"tickmode":"array","range":[-0.0052550832854681,0.11035674899483],"ticktext":["0.000","0.025","0.050","0.075","0.100"],"tickvals":[0,0.025,0.05,0.075,0.1],"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.65296803652968,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.9551681195517},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"domain":[0,1],"gridcolor":"rgba(211,211,211,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":"Frequency","titlefont":{"color":"rgba(0,0,0,1)","family":"","size":13.2835201328352},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"transparent","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.9551681195517},"y":0.807524059492563},"annotations":[{"text":"Motif:<br>","x":1.02,"y":1,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xref":"paper","yref":"paper","textangle":-0,"xanchor":"left","yanchor":"top"}],"barmode":"stack","bargap":0,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToRemove":["sendDataToCloud"]},"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script></p>
+
+</article></slide><slide class=''><hgroup><h2>Benchmark</h2></hgroup><article  id="benchmark">
+
+<p><div id="htmlwidget-2017" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2017">{"x":{"filter":"none","data":[["PASTA2","FoldAmyloid","appnn","AmyloGram"],[0.854996271439225,0.735098185433756,0.834302759134974,0.897153865274671],[0.429123592940917,0.45255292317694,0.582260193831285,0.630749412736651],[0.38255033557047,0.751677852348993,0.885906040268456,0.865771812080537],[0.951851851851852,0.718518518518519,0.722222222222222,0.788888888888889]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Software\u003c/th>\n      <th>AUC\u003c/th>\n      <th>MCC\u003c/th>\n      <th>Sensitivity\u003c/th>\n      <th>Specificity\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"iDisplayLength":6,"searching":true,"dom":"t","columnDefs":[{"className":"dt-right","targets":[1,2,3,4]}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[4]; if (value!==null) $(this.api().cell(row, 4).node()).css({'background-color':value <= 0.94 ? 'white' : value <= 1 ? 'aquamarine' : 'white'});\nvar value=data[3]; if (value!==null) $(this.api().cell(row, 3).node()).css({'background-color':value <= 0.88 ? 'white' : value <= 1 ? 'aquamarine' : 'white'});\nvar value=data[2]; if (value!==null) $(this.api().cell(row, 2).node()).css({'background-color':value <= 0.63 ? 'white' : value <= 1 ? 'aquamarine' : 'white'});\nvar value=data[1]; if (value!==null) $(this.api().cell(row, 1).node()).css({'background-color':value <= 0.897 ? 'white' : value <= 1 ? 'aquamarine' : 'white'});\nDTWidget.formatRound(this, row, data, 1, 4);\nDTWidget.formatRound(this, row, data, 2, 4);\nDTWidget.formatRound(this, row, data, 3, 4);\nDTWidget.formatRound(this, row, data, 4, 4);\n}"}},"evals":["options.rowCallback"],"jsHooks":[]}</script></p>
+
+</article></slide><slide class=''><hgroup><h2>Summary</h2></hgroup><article  id="summary">
+
+<p>Features extracted using n-gram analysis are informative enough to train accurate detectors of amyloidogenicity.</p>
+
+<p>They may also be used to explain the mechanism of amyloid aggregation.</p>
+
+<div id="refs" class="references">
+</div></article></slide>
 
 
   <slide class="backdrop"></slide>

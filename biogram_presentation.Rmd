@@ -9,6 +9,7 @@ output:
   slidy_presentation: default
 fig_width: 9.5
 widescreen: yes
+bibliography: amyloids.bib
 ---
   
 ```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
@@ -69,45 +70,45 @@ Amyloids are proteins associated with the number of clinical disorders (e.g. Alz
 
 Through hot-spots amyloids can create harmful zipper-like $\beta$-structures.
 
-## n-grams
+<!-- ## n-grams -->
 
-```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
-sample_seq <- matrix(sample(c("A", "C", "G", "T"), 18, replace = TRUE), nrow = 3)
-colnames(sample_seq) <- paste0("P", 1L:ncol(sample_seq))
-rownames(sample_seq) <- paste0("S", 1L:nrow(sample_seq))
+<!-- ```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE} -->
+<!-- sample_seq <- matrix(sample(c("A", "C", "G", "T"), 18, replace = TRUE), nrow = 3) -->
+<!-- colnames(sample_seq) <- paste0("P", 1L:ncol(sample_seq)) -->
+<!-- rownames(sample_seq) <- paste0("S", 1L:nrow(sample_seq)) -->
 
-kable(data.frame(sample_seq), caption = "Sample sequences.  S - sequence, P - position.", digits = 0)
-```
+<!-- kable(data.frame(sample_seq), caption = "Sample sequences.  S - sequence, P - position.", digits = 0) -->
+<!-- ``` -->
 
-## n-grams
+<!-- ## n-grams -->
 
-```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
-unis <- count_ngrams(sample_seq, 1, c("A", "C", "G", "T"))
-unis <- data.frame(as.matrix(unis))
-colnames(unis) <- decode_ngrams(colnames(unis))
-rownames(unis) <- paste0("S", 1L:nrow(sample_seq))
-kable(unis, caption = "Counts of 1-grams.", digits = 0)
-```
+<!-- ```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE} -->
+<!-- unis <- count_ngrams(sample_seq, 1, c("A", "C", "G", "T")) -->
+<!-- unis <- data.frame(as.matrix(unis)) -->
+<!-- colnames(unis) <- decode_ngrams(colnames(unis)) -->
+<!-- rownames(unis) <- paste0("S", 1L:nrow(sample_seq)) -->
+<!-- kable(unis, caption = "Counts of 1-grams.", digits = 0) -->
+<!-- ``` -->
 
-## n-grams
+<!-- ## n-grams -->
 
-```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
-unis <- count_ngrams(sample_seq, 2, c("A", "C", "G", "T"))
-unis <- data.frame(as.matrix(unis))
-colnames(unis) <- decode_ngrams(colnames(unis))
-rownames(unis) <- paste0("S", 1L:nrow(sample_seq))
-kable(unis, caption = "Counts of 2-grams.", digits = 0)
-```
+<!-- ```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE} -->
+<!-- unis <- count_ngrams(sample_seq, 2, c("A", "C", "G", "T")) -->
+<!-- unis <- data.frame(as.matrix(unis)) -->
+<!-- colnames(unis) <- decode_ngrams(colnames(unis)) -->
+<!-- rownames(unis) <- paste0("S", 1L:nrow(sample_seq)) -->
+<!-- kable(unis, caption = "Counts of 2-grams.", digits = 0) -->
+<!-- ``` -->
 
-## n-grams
+<!-- ## n-grams -->
 
-```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
-unis <- count_ngrams(sample_seq, 2, d = 1, c("A", "C", "G", "T"))
-unis <- data.frame(as.matrix(unis))
-colnames(unis) <- sub("_", "|", decode_ngrams(colnames(unis)))
-rownames(unis) <- paste0("S", 1L:nrow(sample_seq))
-kable(unis, caption = "Counts of 2-grams with distance 1.", digits = 0)
-```
+<!-- ```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE} -->
+<!-- unis <- count_ngrams(sample_seq, 2, d = 1, c("A", "C", "G", "T")) -->
+<!-- unis <- data.frame(as.matrix(unis)) -->
+<!-- colnames(unis) <- sub("_", "|", decode_ngrams(colnames(unis))) -->
+<!-- rownames(unis) <- paste0("S", 1L:nrow(sample_seq)) -->
+<!-- kable(unis, caption = "Counts of 2-grams with distance 1.", digits = 0) -->
+<!-- ``` -->
 
 
 ## Encoding of amino acids
@@ -131,6 +132,7 @@ datatable(enc2df(list(`1` = "g",
     backgroundColor = styleEqual("K, P, R", 'aquamarine')
   )
 ```
+
 
 ## Important n-grams
 
@@ -161,3 +163,53 @@ ngram_plot <- ggplot(ngram_freq_plot, aes(x = decoded_name, y = Frequency)) +
 
 ggplotly(ngram_plot, tooltip = "y")
 ```
+
+## Benchmark
+
+```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
+benchmark_dat <- structure(list(classifier = structure(c(4L, 3L, 1L, 2L), .Label = c("appnn", 
+"class14592_10", "FoldAmyloid", "PASTA2"), class = "factor"), 
+    AUC = c(0.854996271439225, 0.735098185433756, 0.834302759134974, 
+    0.897153865274671), MCC = c(0.429123592940917, 0.45255292317694, 
+    0.582260193831285, 0.630749412736651), Sens = c(0.38255033557047, 
+    0.751677852348993, 0.885906040268456, 0.865771812080537), 
+    Spec = c(0.951851851851852, 0.718518518518519, 0.722222222222222, 
+    0.788888888888889), pos = c(NA, NA, NA, 10L), nice_name = structure(c(4L, 
+    3L, 2L, 1L), .Label = c("14592", "appnn", "FoldAmyloid", 
+    "PASTA2"), class = "factor")), .Names = c("classifier", "AUC", 
+"MCC", "Sens", "Spec", "pos", "nice_name"), row.names = c(1L, 
+2L, 3L, 5L), class = "data.frame")
+
+benchmark_dat %>% 
+  mutate(classifier = as.character(classifier)) %>% 
+  mutate(classifier = ifelse(classifier == "class14592_10", "AmyloGram", classifier)) %>% 
+  rename(Software = classifier, Sensitivity = Sens, Specificity = Spec) %>% 
+  select(1L:5) %>% 
+  datatable(rownames = FALSE, filter = "none", 
+          options = list(dom = 't')) %>% 
+  formatRound(2L:5, 4) %>% 
+  formatStyle(
+    'AUC',
+    backgroundColor = styleInterval(c(0.897, 1), c('white', 'aquamarine', 'white'))
+  ) %>%
+  formatStyle(
+    'MCC',
+    backgroundColor = styleInterval(c(0.63, 1), c('white', 'aquamarine', 'white'))
+  ) %>% 
+  formatStyle(
+    'Sensitivity',
+    backgroundColor = styleInterval(c(0.88, 1), c('white', 'aquamarine', 'white'))
+  ) %>% 
+  formatStyle(
+    'Specificity',
+    backgroundColor = styleInterval(c(0.94, 1), c('white', 'aquamarine', 'white'))
+  )
+
+```
+
+
+## Summary
+
+Features extracted using n-gram analysis are informative enough to train accurate detectors of amyloidogenicity.  
+
+They may also be used to explain the mechanism of amyloid aggregation.
