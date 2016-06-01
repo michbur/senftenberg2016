@@ -115,6 +115,19 @@ Through hot-spots amyloids can create harmful zipper-like $\beta$-structures.
 
 We created 524 284 reduced amino acid alphabets (encodings) with different lengths (from three to six letters) using Ward's clusterization on the selected physicochemical properties from AAIndex database.
 
+## Best-performing encoding
+
+```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
+datatable(enc2df(list(`1` = "g", 
+                  `2` = c("k", "p", "r"), 
+                  `3` = c("i", "l", "v"), 
+                  `4` = c("f", "w", "y"), 
+                  `5` = c("a", "c", "h", "m"), 
+                  `6` = c("d", "e", "n", "q", "s", "t"))), 
+          rownames = FALSE, filter = "none", 
+          options = list(dom = 't')) 
+```
+
 
 ## Best-performing encoding
 
@@ -132,6 +145,8 @@ datatable(enc2df(list(`1` = "g",
     backgroundColor = styleEqual("K, P, R", 'aquamarine')
   )
 ```
+
+Amino acids K, P, R are prohibited in hot spots [@paz_sequence_2004].
 
 
 ## Important n-grams
@@ -213,3 +228,5 @@ benchmark_dat %>%
 Features extracted using n-gram analysis are informative enough to train accurate detectors of amyloidogenicity.  
 
 They may also be used to explain the mechanism of amyloid aggregation.
+
+## References
