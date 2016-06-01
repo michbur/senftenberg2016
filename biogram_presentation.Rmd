@@ -25,7 +25,7 @@ library(plotly)
 
 options(DT.options = list(iDisplayLength = 6, searching = TRUE))
 
-size_mod <- -4
+size_mod <- -1
 
 enc2df <- function(x)
   data.frame(Names = names(x), Elements = toupper(sapply(x, paste0, collapse = ", ")))
@@ -148,6 +148,24 @@ datatable(enc2df(list(`1` = "g",
 
 Amino acids K, P, R are prohibited in hot spots [@paz_sequence_2004].
 
+## Best-performing encoding
+
+```{r, echo = FALSE, message = FALSE, results='asis',warning=FALSE}
+datatable(enc2df(list(`1` = "g", 
+                  `2` = c("k", "p", "r"), 
+                  `3` = c("i", "l", "v"), 
+                  `4` = c("f", "w", "y"), 
+                  `5` = c("a", "c", "h", "m"), 
+                  `6` = c("d", "e", "n", "q", "s", "t"))), 
+          rownames = FALSE, filter = "none", 
+          options = list(dom = 't')) %>% 
+  formatStyle(
+    'Elements',
+    backgroundColor = styleEqual("K, P, R", 'aquamarine')
+  )
+```
+
+The best-perfoming encoding was used to train AmyloGram, n-gram based predictor of amyloidogenicity.
 
 ## Important n-grams
 
@@ -222,11 +240,12 @@ benchmark_dat %>%
 
 ```
 
+Comparison of AmyloGram with APPNN [@familia_prediction_2015], PASTA2 [@walsh_pasta_2014] and FoldAmyloid [@garbuzynskiy_foldamyloid:_2010].
 
 ## Summary
 
-Features extracted using n-gram analysis are informative enough to train accurate detectors of amyloidogenicity.  
+Features extracted using n-gram analysis are informative enough to train accurate detectors of amyloidogenicity. They may also be used to explain the mechanism of amyloid aggregation.  
 
-They may also be used to explain the mechanism of amyloid aggregation.
+[www.smorfland.uni.wroc.pl/amylogram](www.smorfland.uni.wroc.pl/amylogram)
 
 ## References
